@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="下面整理一些常用的命令，内容来自于网络整合，会把自己常用的收集在这里   #CURL命令下载单个文件，默认将输出打印到标准输出中(STDOUT)中curl http://www.centos.org通过-o/-O选项保存下载的文件到指定的文件中：-o：将文件保存为命令行中指定的文件名的文件中-O：使用URL中默认的文件名保存文件到本地   将文件下载到本地并命名为mygettext.htmlcur">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux常用命令及操作">
+<meta property="og:url" content="http://cenrise.com/2017/05/02/linux/Linux常用命令及操作/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="下面整理一些常用的命令，内容来自于网络整合，会把自己常用的收集在这里   #CURL命令下载单个文件，默认将输出打印到标准输出中(STDOUT)中curl http://www.centos.org通过-o/-O选项保存下载的文件到指定的文件中：-o：将文件保存为命令行中指定的文件名的文件中-O：使用URL中默认的文件名保存文件到本地   将文件下载到本地并命名为mygettext.htmlcur">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-08-18T01:44:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux常用命令及操作">
+<meta name="twitter:description" content="下面整理一些常用的命令，内容来自于网络整合，会把自己常用的收集在这里   #CURL命令下载单个文件，默认将输出打印到标准输出中(STDOUT)中curl http://www.centos.org通过-o/-O选项保存下载的文件到指定的文件中：-o：将文件保存为命令行中指定的文件名的文件中-O：使用URL中默认的文件名保存文件到本地   将文件下载到本地并命名为mygettext.htmlcur">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2017/05/02/linux/Linux常用命令及操作/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux常用命令及操作 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2017/05/02/linux/Linux常用命令及操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux常用命令及操作
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-05-02 10:54:00" itemprop="dateCreated datePublished" datetime="2017-05-02T10:54:00+08:00">2017-05-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-08-18 09:44:35" itemprop="dateModified" datetime="2017-08-18T09:44:35+08:00">2017-08-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/linux基本配置/" itemprop="url" rel="index"><span itemprop="name">linux基本配置</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>下面整理一些常用的命令，内容来自于网络整合，会把自己常用的收集在这里  </p>
+<p>#CURL命令<br>下载单个文件，默认将输出打印到标准输出中(STDOUT)中<br>curl <a href="http://www.centos.org" target="_blank" rel="noopener">http://www.centos.org</a><br>通过-o/-O选项保存下载的文件到指定的文件中：<br>-o：将文件保存为命令行中指定的文件名的文件中<br>-O：使用URL中默认的文件名保存文件到本地  </p>
+<h1 id="将文件下载到本地并命名为mygettext-html"><a href="#将文件下载到本地并命名为mygettext-html" class="headerlink" title="将文件下载到本地并命名为mygettext.html"></a>将文件下载到本地并命名为mygettext.html</h1><p>curl -o mygettext.html <a href="http://www.gnu.org/software/gettext/manual/gettext.html" target="_blank" rel="noopener">http://www.gnu.org/software/gettext/manual/gettext.html</a>  </p>
+<h1 id="将文件保存到本地并命名为gettext-html"><a href="#将文件保存到本地并命名为gettext-html" class="headerlink" title="将文件保存到本地并命名为gettext.html"></a>将文件保存到本地并命名为gettext.html</h1><p>curl -O <a href="http://www.gnu.org/software/gettext/manual/gettext.html" target="_blank" rel="noopener">http://www.gnu.org/software/gettext/manual/gettext.html</a><br>同样可以使用转向字符”&gt;”对输出进行转向输出  </p>
+<p>##同时获取多个文件<br>curl -O URL1 -O URL2  </p>
+<p>#ECHO命令<br>在终端下打印变量value的时候也是常常用到的, 因此有必要了解下echo的用法<br>echo命令的功能是在显示器上显示一段文字，一般起到一个提示的作用。<br>该命令的一般格式为： echo [ -n ] 字符串<br>其中选项n表示输出文字后不换行；字符串能加引号，也能不加引号。用echo命令输出加引号的字符串时，将字符串原样输出；用echo命令输出不加引号的字符串时，将字符串中的各个单词作为字符串输出，各字符串之间用一个空格分割。<br>功能说明：显示文字。<br>语 　 法：echo [-ne][字符串]或 echo [–help][–version]<br>补充说明：echo会将输入的字符串送往标准输出。输出的字符串间以空白字符隔开, 并在最后加上换行号。<br>参　　 数：-n 不要在最后自动换行<br>-e 若字符串中出现以下字符，则特别加以处理，而不会将它当成一般<br>文字输出：<br>   \a 发出警告声；<br>   \b 删除前一个字符；<br>   \c 最后不加上换行符号；<br>   \f 换行但光标仍旧停留在原来的位置；<br>   \n 换行且光标移至行首；<br>   \r 光标移至行首，但不换行；<br>   \t 插入tab；<br>   \v 与\f相同；<br>   \ 插入\字符；<br>   \nnn 插入nnn（八进制）所代表的ASCII字符；<br>–help 显示帮助<br>–version 显示版本信息  </p>
+<p>##其它功能<br>ECHO命令是大家都熟悉的DOS批处理命令的一条子命令，但它的一些功能和用法也许你并不是全都知道，不信你瞧：<br>1． 作为控制批处理命令在执行时是否显示命令行自身的开关 格式：ECHO [ON|OFF] 如果想关闭“ECHO OFF”命令行自身的显示，则需要在该命令行前加上“@”。<br>2． 显示当前ECHO设置状态 格式：ECHO<br>3． 输出提示信息 格式：ECHO信息内容 上述是ECHO命令常见的三种用法，也是大家熟悉和会用的，但作为DOS命令淘金者你还应该知道下面的技巧：<br>4． 关闭DOS命令提示符 在DOS提示符状态下键入ECHO OFF，能够关闭DOS提示符的显示使屏幕只留下光标，直至键入ECHO ON，提示符才会重新出现。<br>5． 输出空行，即相当于输入一个回车 格式：ECHO． 值得注意的是命令行中的“．”要紧跟在ECHO后面中间不能有空格，否则“．”将被当作提示信息输出到屏幕。另外“．”可以用，：；”／[/]＋等任一符号替代。 在下面的例子中ECHO．输出的回车，经DOS管道转向作为TIME命令的输入，即相当于在TIME命令执行后给出一个回车。所以执行时系统会在显示当前时间后，自动返回到DOS提示符状态： C:〉ECHO.|TIME ECHO命令输出空行的另一个应用实例是：将ECHO．加在自动批处理文件中，使原本在屏幕下方显示的提示画面，出现在屏幕上方。<br>6． 答复命令中的提问 格式：ECHO答复语|命令文件名 上述格式可以用于简化一些需要人机对话的命令（如：CHKDSK／F；FORMAT Drive:；del <em>.</em>）的操作，它是通过DOS管道命令把ECHO命令输出的预置答复语作为人机对话命令的输入。下面的例子就相当于在调用的命令出现人机对话时输入“Y”回车： C:〉ECHO Y|CHKDSK/F C:〉ECHO Y|DEL A :<em>.</em><br>7． 建立新文件或增加文件内容 格式：ECHO 文件内容＞文件名 ECHO 文件内容＞＞文件名 例如：C:〉ECHO @ECHO OFF〉AUTOEXEC.BAT建立自动批处理文件 C:〉ECHO C:/CPAV/BOOTSAFE〉〉AUTOEXEC.BAT向自动批处理文件中追加内容 C:TYPE AUTOEXEC.BAT显示该自动批处理文件 @ECHO OFF C:/CPAV/BOOTSAFE<br>    可用于设置环境变量，如：<br>    $sudo echo “export HIVE_HOME=$PWD/hive-0.9.0” &gt; /etc/profile.d/hive.sh<br>    $sudo echo “PATH=$PATH:$HIVE_HOME/bin” &gt;&gt; /etc/profile.d/hive.sh<br>8． 向打印机输出打印内容或打印控制码 格式：ECHO 打印机控制码＞PRN ECHO 打印内容＞PRN 下面的例子是向M－1724打印机输入打印控制码。＜Alt＞156是按住Alt键在小键盘键入156，类似情况依此类推： C:〉ECHO 〈Alt〉+156〈Alt〉+42〈Alt〉+116〉PRN（输入下划线命令FS＊t） C:〉ECHO 〈Alt〉+155@〉PRN（输入初始化命令ESC@） C:〉ECHO.〉PRN（换行）<br>9． 使喇叭鸣响 C:〉ECHO ^G “^G”是用Ctrl＋G或Alt＋007输入，输入多个^G可以产生多声鸣响。使用方法是直接将其加入批处理文件中或做成批处理文件调用。<br>10．执行ESC控制序列修改屏幕和键盘设置 我们知道DOS的设备驱动程序ANSI.SYS提供了一套用来修改屏幕和键盘设置的ESC控制序列。如执行下述内容的批处理程序可以把功能键F12定义为DOS命令“DIR／W”，并把屏幕颜色修改为白色字符蓝色背景。 @ECHO”←[0;134;”DIR/W”;13p @ECHO”←[1;37;44m （注：批处理文件中“←”字符的输入方法是在编辑状态下按Alt中小键盘上的27） DOS命令是接触计算机的人首先要学到的，对许多人来说是太熟悉太简单了，其实不然，在这些命令中蕴藏着丰富的内容，仍有待于我们进一步去理解去开发，如果你是一个有心人就一定会从这些自以为熟知的命令中发现新的闪光点，淘得真金。  </p>
+<p>#&gt;和&gt;&gt;的区别,&lt;号使用<br>Linux中经常会用到将内容输出到某文件当中，只需要在执行命令后面加上&gt;或者&gt;&gt;号即可进入操作。<br>大于号：将一条命令执行结果（标准输出，或者错误输出，本来都要打印到屏幕上面的）重定向其它输出设备（文件，打开文件操作符，或打印机等等）<br>小于号：命令默认从键盘获得的输入，改成从文件，或者其它打开文件以及设备输入  </p>
+<blockquote>
+<blockquote>
+<p>是追加内容<br>是覆盖原有内容<br>示例：  </p>
+<ol>
+<li>bogon:Desktop wenxuechao$ echo ‘abc’ &gt; test.txt    </li>
+<li>bogon:Desktop wenxuechao$ echo ‘123’ &gt;&gt; test.txt<br>执行效果，第一句命令会在桌面创建个test.txt的文件，并且将abc写到文件中。<br>第二句命令，会在文件下方，再次写入内容。<br>&lt;小于号<br>mysql -u root -p -h test &lt; test.sql 导入数据    </li>
+</ol>
+</blockquote>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/hadoop/HBase入门概念/" rel="next" title="HBase入门概念">
+                <i class="fa fa-chevron-left"></i> HBase入门概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/02/设计模式/主要设计模式及简要介绍/" rel="prev" title="TODO-主要设计模式及简要介绍">
+                TODO-主要设计模式及简要介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#将文件下载到本地并命名为mygettext-html"><span class="nav-number">1.</span> <span class="nav-text">将文件下载到本地并命名为mygettext.html</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将文件保存到本地并命名为gettext-html"><span class="nav-number">2.</span> <span class="nav-text">将文件保存到本地并命名为gettext.html</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设x    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井">
+<meta name="keywords" content="管理驾驶舱设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="指标体系规划与管理驾驶舱设计">
+<meta property="og:url" content="http://cenrise.com/2019/03/13/数据中台/指标体系规划与管理驾驶舱设计/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设x    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://cenrise.com/images/数据中台/管理驾驶舱设计-页面流设计.jpg">
+<meta property="og:image" content="http://cenrise.com/images/数据中台/管理驾驶舱设计-页面跳转设计.jpg">
+<meta property="og:updated_time" content="2019-03-14T02:49:10.334Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="指标体系规划与管理驾驶舱设计">
+<meta name="twitter:description" content="企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设x    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井">
+<meta name="twitter:image" content="http://cenrise.com/images/数据中台/管理驾驶舱设计-页面流设计.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2019/03/13/数据中台/指标体系规划与管理驾驶舱设计/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>指标体系规划与管理驾驶舱设计 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2019/03/13/数据中台/指标体系规划与管理驾驶舱设计/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">指标体系规划与管理驾驶舱设计
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-13 09:55:00" itemprop="dateCreated datePublished" datetime="2019-03-13T09:55:00+08:00">2019-03-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-14 10:49:10" itemprop="dateModified" datetime="2019-03-14T10:49:10+08:00">2019-03-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据中台/" itemprop="url" rel="index"><span itemprop="name">数据中台</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据中台/管理驾驶舱设计/" itemprop="url" rel="index"><span itemprop="name">管理驾驶舱设计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设x    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设    企业开展数据化运营，需要指标来驱动业务，但企业内部指标间纷繁复杂，如何拨开云雾，统一指标口径，将指标管理得井井有条，并指导管理驾驶舱建设x引用。
+结合国际数据领域的方法论和国内企业的最佳实践，通过主题划分、自上而下和自下而上相结合的指标梳理，形成整个企业的分析主题和指标体系框架。通过模拟领导决策过程，开展管理驾驶舱的页面流设计和页面跳转设计，形成流畅的仪表板故事线，并根据发现的问题随时开展更深入的分析，是开展数据化运营，实现业务增长的重点。
+</code></pre><h2 id="指标体系规划"><a href="#指标体系规划" class="headerlink" title="指标体系规划"></a>指标体系规划</h2><h3 id="什么是企业指标体系"><a href="#什么是企业指标体系" class="headerlink" title="什么是企业指标体系"></a>什么是企业指标体系</h3><p> 在传统的企业管理环境下，指标通常是指绩效指标或者业务指标，通常用于KPI考核。随着商务智能和大数据的发展，除了考核以外，指标还用于追踪、用来把握整体变化趋势，关注异常波动；指标也可以用于监测，对超出特定范围的指标异动，用红、黄、绿色交通灯等图标开展预警。<br> 企业的指标通常分散在各个业务流程当中，并且在流程的各个环节当中 由不同部门所计算和采纳。当各个部门应用的指标越来越多时，指标口径不一致，数据重复报送、重复统计等问题也会不断地涌现出来。<br>    企业指标体系规划就是在企业指标体系混乱、指标口径不统一的背景下应运而生的。因此需要对指标体系进行梳理、划分主题、规划蓝图，并通过管理驾驶舱来实施，通过企业数据治理来对指标体系提供数据质量保障。</p>
+<h3 id="如何开展指标体系管理？"><a href="#如何开展指标体系管理？" class="headerlink" title="如何开展指标体系管理？"></a>如何开展指标体系管理？</h3><p> 要想开展指标的数据管理，首先应当对指标进行划分。有许多指标分散在多个IT系统当中，并且跨多个流程和多个部门，并由多个级别的员工使用。因此传统方法很难做到完全穷尽、没有遗漏地对指标进行划分、以便指定指标的归口部门。为了清晰地对企业指标进行划分，业界的最佳实践是按照“主题”对指标进行划分，“主题”是相关性较强的内容的一个聚类。目前国际上已经给出较为通用的指标体系主题划分的框架，如SMART战略板。<br>    指标体系主题划分，主要是从企业管理报表的设计方和创建方的角度出发的。而报表和指标的实际使用过程，通常需要从决策者的需求方的角度出发。这两个角度通常并不一致，SMART战略板的主题划分方法，通常经过一定程度的抽象，因此相对而言比较稳定。在具体的BI实施落地时，通常分为两层结构：一层是相对稳定的指标主题划分，以报表页面流的方式对指标体系进行组织，需要对主题层层细化，最终形成具有层次和次序的页面流；另一层是相对比较灵活易构的磁贴式的仪表板，可以按需进行灵活布局组合，并建立起页面跳转关系，可以进一步查看详情页面并开展交互式分析。通过对企业的指标数据划分主题，形成相对互斥并且完备（MECE)的指标体系、形成页面流，并进一步在此基础之上，增加包含更多跨主题的综合指标的仪表板，如ROE，并建立起同关联密切的页面之间的跳转关系。</p>
+<h3 id="3-如何规划指标体系？"><a href="#3-如何规划指标体系？" class="headerlink" title="3.如何规划指标体系？"></a>3.如何规划指标体系？</h3><p>指标体系的规划，通常有两种方式：自上而下和自下而上。在实践过程中通常是自上而下和自下而上两种方式结合。<br>自上而下的方式，通常就是从数据的顶层设计入手，在数据蓝图的基础上，关注整个企业的价值链条，能够并从中分析出整个价值链上的关键环节，形成层次；按照决策者的通用分析思路进一步细分，形成次序；如此直到第五、第六级主题，作为页面流设计的基础。</p>
+<p>自下而上方式的出必点，通常是企业现有的管理报表体系。通过对企业的管理报表进行梳理，从中提炼出常见的维度、指标度量值，并且进一步明确指标的数据来源，所在系统、统计频率、指标定义、指标口径、分析模式等，通过将维度、度量值进行多维交叉、能够设计出更多指标。</p>
+<h3 id="4-指标体系规划的常用工具"><a href="#4-指标体系规划的常用工具" class="headerlink" title="4.指标体系规划的常用工具"></a>4.指标体系规划的常用工具</h3><h4 id="（1）SMART框架"><a href="#（1）SMART框架" class="headerlink" title="（1）SMART框架"></a>（1）SMART框架</h4><p>SMART战略板很早之前就已经普遍应用于数据战略规划当中，其本质在于将企业的指标划分为5-7类分析主题。</p>
+<h4 id="（2）战略地图-平衡计分卡"><a href="#（2）战略地图-平衡计分卡" class="headerlink" title="（2）战略地图/平衡计分卡"></a>（2）战略地图/平衡计分卡</h4><pre><code>战略地图/平衡计分卡更多强调的是财务非财务、局部与全局、近期与远期之间的平衡。通过该方法可以帮助我们在对分析主题细化时，快速得到一些重要并且综合全面的实用指标。
+</code></pre><h4 id="（3）KPI价值树"><a href="#（3）KPI价值树" class="headerlink" title="（3）KPI价值树"></a>（3）KPI价值树</h4><p>KPI价值树更加强调重点核心指标。这些指标更加适合高管在管理驾驶舱中以仪表板的形式查看，通常这些指标会对应多个分析主题 。</p>
+<h4 id="（4）全面预算管理"><a href="#（4）全面预算管理" class="headerlink" title="（4）全面预算管理"></a>（4）全面预算管理</h4><p>全面预算管理中有效地将业务量指标和财务指标衔接到一起，涵盖企业经营的各个方面。</p>
+<h4 id="（5）现有管理报表"><a href="#（5）现有管理报表" class="headerlink" title="（5）现有管理报表"></a>（5）现有管理报表</h4><p>这可以从现有的管理报表中抽取关键的维度和关键的度量指标作为我们建立整个指标体系的基础 。</p>
+<p>通过以上工具，在蓝图的基础上对子主题进行细化，形成树状的多级主题划分，最终的子主题（如第六级）通常仅包含1个关键指标度量值，或者多个但不超过10个指标。并且对于每个指标：<br>（1）明确指标名称、定义、计算公式、单位。这对于企业统计指标口径，划分指标的归口部门而言非常重要。<br>（2）明确指标需求方。最终指标的使用部门，或者是哪些部门关心现有体系中的指标，需要进一步识别。不同层次的领导有不同的关注点。高层领导可能关心利润、收入、成本，他们都只是站在比较宏观的角度去关心与参考。<br>（3）指标寻源。指标进行寻源是指计算指标所需的基础明细数据和原始来源。指标的归口部门要对指标进行逻辑拆分，通常可拆分为维度和度量两部分，并可以识别出特定的分析模式和计算公式。<br>（4）指标分析模式。对于整个管理驾驶舱中的各项指标，要能体现出具体的分析模式，这些分析模式包括同比、环比、结构占比、完成率分析等。<br>（5）指标分析的时间/机构维度。所谓时间维度是指报表或指标的具体统计频率、可按年、月、周来统计。所谓机构维度是指整个集团级别的还是某个二级单位级别的。<br>（6）图表的可视化展现方式。另外还要考虑不同的图表展现方式。饼图、条形图、柱形图、拆线图是最常用最直观的图表类型。另外，热力图、面积图、标签云、漏斗图、瀑布图以及各类组合图表在特定场合下也能形成很好的展现效果。<br>这些指标的分类和次序，成为下一步管理驾驶舱的页面流设计的基础框架，形成带有层次和次序的页面流，每个页面中包含了一个或多个指标，并且通过识别的分析模式和可视化展现方式，能为管理驾驶舱的详细设计提供良好的指导 。</p>
+<h2 id="管理驾驶舱的设计"><a href="#管理驾驶舱的设计" class="headerlink" title="管理驾驶舱的设计"></a>管理驾驶舱的设计</h2><h3 id="什么是管理驾驶舱？"><a href="#什么是管理驾驶舱？" class="headerlink" title="什么是管理驾驶舱？"></a>什么是管理驾驶舱？</h3><p> 管理驾驶舱，是通过统计分析工具和图表工具来创建的仪表板，各个仪表板之间通过整个的故事线链接起来。仪表板中融合了许多的关键指标，这些指标可以一目了然地把我们的各个数据和指标之间错综复杂的关系用最直观的方式为公司的领导和各级员工表现出来，为他们提供决策支持。</p>
+<p>管理驾驶舱的设计，承接了我们整个的指标体系中的度量指标、维度和分析方法，并遵循特定的展现方式，形成了数百页的管理驾驶舱的设计方案，以体现出整体的分析思路和分析步骤的设计。</p>
+<h4 id="1-分析展现页面的设计"><a href="#1-分析展现页面的设计" class="headerlink" title="1.分析展现页面的设计"></a>1.分析展现页面的设计</h4><p>分析展现页面的设计通常有两种手段：一种是通过PPT或者低保真草图绘制工具来设计BI展现页面的需求，一种是通过敏捷BI工具和模拟数据创建并实现分析原型。PPT是报表页面和仪表板页面设计的主要工具通过PPT图表来模拟整个管理驾驶舱中的图表展现和控件，通过PPT中的页面和按钮来模拟管理驾驶舱中的页面流和页面跳转，通过这种方式和领导确认需求，并交由IT团队开发。敏捷BI工具和可视化分析工具，如Tableau、Qlik View等，可用于快速创建原型。此外还有我们熟悉的Excel和Power BI，通过快速原型来创建仪表板开展分析，并进一步交给团队在生产环境中进行部署。</p>
+<h4 id="2-页面流设计"><a href="#2-页面流设计" class="headerlink" title="2.页面流设计"></a>2.页面流设计</h4><p>基于指标体系规划文档，按照指标的树形结构的主题，来确定页面的层次和次序从而形成逻辑一致的页面流。<br><img src="/images/数据中台/管理驾驶舱设计-页面流设计.jpg" alt="&quot;管理驾驶舱设计-页面流设计&quot;"></p>
+<h4 id="3-页面跳转设计"><a href="#3-页面跳转设计" class="headerlink" title="3.页面跳转设计"></a>3.页面跳转设计</h4><p>通常在使用高度综合的指标体系，如“杜邦分析”时，需要对页面跳转进行设计。典型的杜邦分析是以价值树的结构进行展现的。<br><img src="/images/数据中台/管理驾驶舱设计-页面跳转设计.jpg" alt="&quot;管理驾驶舱设计-页面跳转设计&quot;"></p>
+<p>作用<br>刘凯，美国注册管理会计师，管理学硕士，曾就职于奥美互动、新华信、毕博、戴尔等公司。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/管理驾驶舱设计/" rel="tag"># 管理驾驶舱设计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/05/数据中台/数据建模-元数据/" rel="next" title="数据建模-元数据">
+                <i class="fa fa-chevron-left"></i> 数据建模-元数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#指标体系规划"><span class="nav-number">1.</span> <span class="nav-text">指标体系规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是企业指标体系"><span class="nav-number">1.1.</span> <span class="nav-text">什么是企业指标体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何开展指标体系管理？"><span class="nav-number">1.2.</span> <span class="nav-text">如何开展指标体系管理？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-如何规划指标体系？"><span class="nav-number">1.3.</span> <span class="nav-text">3.如何规划指标体系？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-指标体系规划的常用工具"><span class="nav-number">1.4.</span> <span class="nav-text">4.指标体系规划的常用工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）SMART框架"><span class="nav-number">1.4.1.</span> <span class="nav-text">（1）SMART框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）战略地图-平衡计分卡"><span class="nav-number">1.4.2.</span> <span class="nav-text">（2）战略地图/平衡计分卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）KPI价值树"><span class="nav-number">1.4.3.</span> <span class="nav-text">（3）KPI价值树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（4）全面预算管理"><span class="nav-number">1.4.4.</span> <span class="nav-text">（4）全面预算管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（5）现有管理报表"><span class="nav-number">1.4.5.</span> <span class="nav-text">（5）现有管理报表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理驾驶舱的设计"><span class="nav-number">2.</span> <span class="nav-text">管理驾驶舱的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是管理驾驶舱？"><span class="nav-number">2.1.</span> <span class="nav-text">什么是管理驾驶舱？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-分析展现页面的设计"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.分析展现页面的设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-页面流设计"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.页面流设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-页面跳转设计"><span class="nav-number">2.1.3.</span> <span class="nav-text">3.页面跳转设计</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Oracle SQL基本知识安装数据库1）安装Oracle常用问题(常用”用户名/密码“规则)：超级管理员：sys /change_on_install普通管理员：system/manager普通用户：scott/tiger—–&amp;gt;默认是被锁定的大数据用户：sh/sh 2）SQL,DDL…SQL：structured query language 结构化查询语言1.file(文件) SQL:D">
+<meta name="keywords" content="oracle,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle SQL基础知识">
+<meta property="og:url" content="http://cenrise.com/2016/05/22/oracle/Oracle SQL基础知识/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="Oracle SQL基本知识安装数据库1）安装Oracle常用问题(常用”用户名/密码“规则)：超级管理员：sys /change_on_install普通管理员：system/manager普通用户：scott/tiger—–&amp;gt;默认是被锁定的大数据用户：sh/sh 2）SQL,DDL…SQL：structured query language 结构化查询语言1.file(文件) SQL:D">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-08-18T01:44:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Oracle SQL基础知识">
+<meta name="twitter:description" content="Oracle SQL基本知识安装数据库1）安装Oracle常用问题(常用”用户名/密码“规则)：超级管理员：sys /change_on_install普通管理员：system/manager普通用户：scott/tiger—–&amp;gt;默认是被锁定的大数据用户：sh/sh 2）SQL,DDL…SQL：structured query language 结构化查询语言1.file(文件) SQL:D">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2016/05/22/oracle/Oracle SQL基础知识/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Oracle SQL基础知识 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2016/05/22/oracle/Oracle SQL基础知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Oracle SQL基础知识
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-05-22 14:43:49" itemprop="dateCreated datePublished" datetime="2016-05-22T14:43:49+08:00">2016-05-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-08-18 09:44:35" itemprop="dateModified" datetime="2017-08-18T09:44:35+08:00">2017-08-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据库/oracle/" itemprop="url" rel="index"><span itemprop="name">oracle</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Oracle-SQL基本知识"><a href="#Oracle-SQL基本知识" class="headerlink" title="Oracle SQL基本知识"></a>Oracle SQL基本知识</h2><h3 id="安装数据库"><a href="#安装数据库" class="headerlink" title="安装数据库"></a>安装数据库</h3><h4 id="1）安装Oracle常用问题-常用”用户名-密码“规则-："><a href="#1）安装Oracle常用问题-常用”用户名-密码“规则-：" class="headerlink" title="1）安装Oracle常用问题(常用”用户名/密码“规则)："></a>1）安装Oracle常用问题(常用”用户名/密码“规则)：</h4><p>超级管理员：sys /change_on_install<br>普通管理员：system/manager<br>普通用户：scott/tiger—–&gt;默认是被锁定的<br>大数据用户：sh/sh</p>
+<h4 id="2）SQL-DDL…"><a href="#2）SQL-DDL…" class="headerlink" title="2）SQL,DDL…"></a>2）SQL,DDL…</h4><p>SQL：structured query language 结构化查询语言<br>1.file(文件)</p>
+<p>SQL:DDL DML TCL DQL DCL<br>DDL(data definition language 数据定义语言): column(列)–structure<br>create table (创建表):<br>列名 data type(数据类型) width(宽度)<br>constraint (约束)      alter table(修改表结构)           drop table(删除表)</p>
+<p>DML(data manipulation language 数据操作语言)<br>:row(行)–data<br>insert 增       update 改            delete 删数据,删表里的记录</p>
+<p>TCL(transaction control language 事务控制语言)<br>commit(提交)         rollback(回滚)               savepoint(保留点)</p>
+<p>DQL(data query language 数据查询语言)<br>select<br>DCL(data control language 数据控制语言)<br>grant(授权)  grant to       revoke(回收权限) revoke from </p>
+<h4 id="3）RDBMS关系型数据库管理系统"><a href="#3）RDBMS关系型数据库管理系统" class="headerlink" title="3）RDBMS关系型数据库管理系统"></a>3）RDBMS关系型数据库管理系统</h4><p>RDBMS(relationship database management system 关系型数据库管理系统) software(软件) —&gt;(create database)database—&gt;login in database (登录数据库系统 )—&gt;用SQL操作table</p>
+<p>create database 创建空间存储表 (datafile 数据文件)<br>login in database<br>1 远程登录到数据库所在的机器上<br>  192.168.0.20 192.168.0.23 192.168.0.26<br>shell(终端) telnet 192.168.0.20  (跟操作系统建连接)<br>login:openlab<br>password:open123<br>sunv210% shell提示符,执行操作系统命令</p>
+<h4 id="4）-登录该机器上的数据库系统"><a href="#4）-登录该机器上的数据库系统" class="headerlink" title="4） 登录该机器上的数据库系统"></a>4） 登录该机器上的数据库系统</h4><p>sunv210% sqlplus (跟数据库建连接)<br>Enter user-name: openlab<br>Enter password:open123<br>SQL&gt;sqlplus openlab/open123<br>SQL&gt; 数据库提示符,执行SQL命令</p>
+<h4 id="5）登录的是哪个数据库"><a href="#5）登录的是哪个数据库" class="headerlink" title="5）登录的是哪个数据库"></a>5）登录的是哪个数据库</h4><p>echo $ORACLE_SID(环境变量)&lt;—DBA(database administrator 数据库管理员)<br>查看ORACLE_SID变量的取值,oracle提供<br>通过设置ORACLE_SID变量,sqlplus就知道跟哪个数据库建连接.<br>unix平台<br>%c shell<br>%echo $ORACLE_SID  (tarena)<br>%setenv ORACLE_SID hiloo<br>%setenv ORACLE_SID tarena</p>
+<p>$ b shell<br>$ echo $ORACLE_SID  (tarena)<br>$ ORACLE_SID=hiloo<br>$ export ORACLE_SID</p>
+<p>windows平台<br>D:>set ORACLE_SID=hiloo (设置环境变量)<br>D:>set ORACLE_SID (查看环境变量)<br>ORACLE_SID=hiloo</p>
+<h5 id="数据表信息："><a href="#数据表信息：" class="headerlink" title="数据表信息："></a>数据表信息：</h5><p>dept(表名) department 部门信息   列名<br>deptno 部门号  dname  部门名称      location 位置(地区)<br>create table dept_hiloo<br>(deptno  number(2), dname char(20),  location char(20));<br>insert into dept_hiloo values (10,’developer’,’beijing’);<br>insert into dept_hiloo values (20,’account’,’shanghai’);<br>insert into dept_hiloo values (30,’sales’,’guangzhou’);<br>insert into dept_hiloo values  ( 40,’operations’,’tianjin’);<br>commit;<br>insert成功后的提示:1 rows inserted<br>emp(表名) employee 员工信息    列名<br>empno 员工 ename 员工名字  job   职位   salary  月薪   bonus   奖金<br>hiredate  入职日期  mgr   manager 管理者    deptno  部门号<br>create table emp_hiloo(<br>empno number(4),    ename varchar2(20),  job  varchar2(15),<br>salary number(7,2), bonus number(7,2),  hiredate date,<br> mgr number(4),  deptno number(10));<br>alter session set nls_date_language=’american’;<br>insert into emp_hiloo values (1001,’zhangwuji’,’Manager’,10000,2000,’12-MAR-10’,1005,10);<br>insert into emp_hiloo values (1001,’zhangwuji’,’Manager’,10000,2000,’12-MAR-10’,1005,10);<br>insert into emp_hiloo values (1002,’liucangsong’,’Analyst’,8000,1000, ‘01-APR-11’,1001,10);<br>insert into emp_hiloo values (1003,’liyi’,’Analyst’,9000,1000,’11-APR-10’,1001,10);<br>insertinto emp_hiloo values (1004,’guofurong’,’Programmer’,5000,null,’01-JAN-11’,1001,10);<br>insertintoemp_hiloo values (1005,’zhangsanfeng’,’President’,15000,null,’15-MAY-08’,null,20);<br>insert into emp_hiloo values (1006,’yanxiaoliu’,’Manager’,5000,400,’01-FEB-09’,1005,20);<br>insert into emp_hiloo values (1007,’luwushuang’,’clerk’,3000,500,’01-FEB-06’,1006,20);<br>insert into emp_hiloo values (1008,’huangrong’,’Manager’,5000,500,’1-MAY-09’,1005,30);<br>insert into emp_hiloo values (1009,’weixiaobao’,’salesman’,4000,null,’20-FEB-09’,1008,30);<br>insert into emp_hiloo values (1010,’guojing’,’salesman’,4500,500,’10-MAY-09’,1008,30);<br>报错信息<br>ORA-00955: name is already used by an existing object(名字已经被一个存在的对象使用)<br>错误：ORA-01843:无效的月份（在中文的plsql控制台上月份要写成’10-3月-02’这种形式，必须是一个数字和一个汉语月。也可以把日期改成英文环境，在执行插入前执行alter session set nls_date_language=’american’;就可以 了。</p>
+<p>DQL<br>select(选择)<br>源表  结果集<br>1 投影操作 select子句实现<br>2 选择操作 where子句实现<br>3 连接操作<br> 1  select ename,salary<em>12 ann_sal(列别名)<br> 2</em> from emp_hiloo</p>
+<p>单引号 表达字符串 ‘’<br>双引号 表达列别名 “”,别名中包含空格,大小写敏感</p>
+<h5 id="1）null值的理解"><a href="#1）null值的理解" class="headerlink" title="1）null值的理解"></a>1）null值的理解</h5><p>1 null值出现在算术表达式中,结果必为null,null可以看作无穷大.<br>2 函数(function) nvl功能空值转换函数<br>nvl是函数名,p1,p2是参数,数据类型必须一致,函数本身有返回值<br>nvl(p1,p2)<br>nvl函数实现:<br>if p1 is null then<br>   return p2;<br>else<br>   return p1;<br>end if;</p>
+<p>3 若有多个null值,distinct去重时,结果集保留一个null值.<br>4 null = null 不成立 null &lt;&gt; null 不成立<br>5 若用in运算符,集合中有null值跟没有null值结果一致的,结果集中不会出现跟null值有关的记录<br>  若用not in运算符,集合中有null值,这个结果集不包含记录.no rows selected.</p>
+<h5 id="2）各个子句的功能"><a href="#2）各个子句的功能" class="headerlink" title="2）各个子句的功能"></a>2）各个子句的功能</h5><p>1 select后面跟列名,列别名,函数,表达式<br>2 select后面的distinct:去重<br>3 where子句<br>  where 条件表达式 (列名 比较运算符 值)<br>表达式 比较运算符 值(尽量不用,为了性能)<br>  where子句中的列为字符类型,放值的位置上不加单引号或加双引号当列名解释,加单引号当字符串解释.<br>  where子句中的列为字符类型,表达具体值时注意字符是大小写敏感的.<br>SQL提供的四个比较运算符<br>肯定形式<br>   between and 区间,范围<br>   in &lt;=&gt; =any  (= or = )(跟集合里的任意一个值相等就满足条件) 集合 离散值<br>   = 单值运算符<br>   in =any 多值运算符<br>   like 像…一样<br>   通配符: %表示0或任意多个字符 <em>任意一个字符<br>   ‘S’ ‘S%’ ‘S</em>‘<br>   is null  如何判断一个列的取值是否为空<br>否定形式<br>= &lt;&gt; != ^=<br>between and   not between and<br>in    not in (&lt;&gt; and &lt;&gt;) &lt;=&gt; &lt;&gt;all(跟集合里的所有值都不能相等)<br>like     not like<br>is null   is not null<br>各个子句的执行顺序<br>from–&gt;where–&gt;select</p>
+<h5 id="3）课堂练习"><a href="#3）课堂练习" class="headerlink" title="3）课堂练习"></a>3）课堂练习</h5><p>1 列出每个员工的名字和他的工资<br>  select ename,salary from emp_hiloo;<br>2 列出每个员工的名字和他的职位<br>  select ename,job from emp_hiloo;<br>3 列出每个员工的名字和他的年薪<br> select ename,salary<em>12 ann_sal from emp_hiloo;<br>4 列出每个员工的名字和他一年的总收入<br>  (salary+bonus)</em>12 (15000+null)<em>12=null<br>  select ename,(salary+nvl(bonus,0))</em>12 tol_sal<br>  from emp_hiloo;<br>5 输出结果如下:<br>  zhangwuji is in department 10.<br>  liucangsong is in department 10.<br>  …..<br>  guojing is in department 30.<br>select ename||’is in department’||deptno||’.’employee from emp_hiloo;<br>什么要加employee呢？Employee是列别名为了显示用的。<br>6 列出该公司有哪些职位<br>  select distinct(job) from emp_hiloo;<br>  select distinct job from emp_hiloo;<br>7 列出该公司不同的奖金<br>  select distinct bonus from emp_hiloo;<br>8 各个部门有哪些不同的职位?<br>  select distinct deptno,job from emp_hiloo;<br>  去重方式:deptno和job联合唯一.<br>  distinct之后和from之前的所有列联合唯一.<br>distinct是保证每一行的唯一性而非某一列的唯一性，所以必须紧跟在select后面。<br>所以distinct只能放在select后面，紧跟select不然会报缺失表达式错误。<br>9 哪些员工的工资高于5000?<br>  select ename,salary from emp_hiloo<br>  where salary &gt; 5000;<br>10 列出员工工资高于5000的员工的年薪?<br>  select ename,salary<em>12 from emp_hiloo<br>  where salary &gt; 5000;<br>11 列出员工年薪高于60000的员工的年薪?<br>  select ename,salary</em>12 from emp_hiloo<br>  where salary<em>12&gt; 60000;<br>  select ename,salary</em>12 ann_sal from emp_hiloo<br>  where ann_sal &gt; 60000(错误的写法)<br>  select ename,salary<em>12 from emp_hiloo<br>  where salary &gt; 5000;<br>12 zhangwuji的年薪是多少?<br>select ename,salary</em>12 from emp_hiloo<br>where ename=’zhangwuji’;<br>  哪些员工的职位是Manager?<br>select ename,job from emp_hiloo<br>where job=’Manager’;<br>  哪些员工的职位是clerk?<br>  select ename,job from emp_hiloo<br>  where job = ‘Manager’<br>   select ename,job from emp_hiloo<br>  where job = ‘clerk’(效率高)<br>  clerk的大小写不清楚<br>  函数:upper(),lower()<br>  select ename,job from emp_hiloo<br>  where upper(job) = ‘CLERK’ (通用性好)<br>13 员工工资在5000到10000之间的员工的年薪<br>   select ename,salary<em>12<br>   from emp_hiloo<br>   where salary &gt;= 5000<br>   and   salary &lt;= 10000;<br>   select ename,salary</em>12<br>   from emp_hiloo<br>   where salary between 5000 and 10000;<br>14 哪些员工的工资是5000或10000.<br>   select ename,salary<br>   from emp_hiloo<br>   where salary = 5000<br>   or salary = 10000<br>   select ename,salary<br>   from emp_hiloo<br>   where salary in (5000,10000)<br>   select ename,salary<br>   from emp_hiloo<br>   where salary =any (5000,10000)<br>15 哪个员工的名字的第二个字符是a.<br>   select ename<br>   from emp_hiloo<br>   where ename like ‘<em>a%’;<br>16 哪个员工的名字的第二个字符是</em>.<br>   select ename<br>   from emp_hiloo<br>   where ename like ‘__%’ escape ‘\’;<br>   第一个<em>表示任意一个字符,代表通配符<br>   \</em>必须连起来看,表示下划线本身,escape定义哪个字符可以定义转义’\’<br>17 哪些员工没有奖金?<br>   select ename,bonus<br>   from emp_hiloo<br>   where bonus is null<br>18 哪些员工有奖金?<br>   select ename,bonus<br>   from emp_hiloo<br>   where bonus is not null<br>19哪些员工的工资不是5000也不是10000.<br>  select ename,salary<br>  from emp_hiloo<br>  where salary not in (5000,10000);<br>  select ename,salary<br>  from emp_hiloo<br>  where salary &lt;&gt; 5000<br>  and salary &lt;&gt; 10000</p>
+<p>create table emp_hiloo<br>( hiredate date）<br>insert into emp_hiloo values (1001,’zhangwuji’,’Manager’,10000,2000,’12-MAR-10’,1005,10);<br>解决方案：<br>    insert into emp_hiloo values (1001,’zhangwuji’,’Manager’,10000,2000,’12-3月-10’,1005,10);</p>
+<h5 id="更改字段名字-mysql、orcle-："><a href="#更改字段名字-mysql、orcle-：" class="headerlink" title="更改字段名字(mysql、orcle)："></a>更改字段名字(mysql、orcle)：</h5><p>Oracle修改表<br>alter table 表名 rename column 原名 to 新名；<br>Mysql:<br>alter table 表名 change column(可写，可不写）原名 新名 字段类型；</p>
+<p>ORA-00904：“ANN_SAL”:invalid identifier<br>无效的标识符</p>
+<p>index(索引) view(视图) sequence(顺序号/序列号) function(函数)<br>session altered.会话已更改<br>set feed on可以设置一个，显示操作数<br>connet tiger重新建立连接  show user查看当前用户是谁。<br>edit 用记事本编辑  /运行。</p>
+<p>###Function (单行、多行)###<br>单行函数:表中的一列作为函数的参数,对于每一条记录函数都有一个返回值.<br>例如:upper lower nvl<br>多行函数：表中的一列作为函数的参数,将记录分组,对于每组数据函数返回一个值.<br>例如:avg</p>
+<p>####1）单行函数####<br> 根据处理参数的数据类型分为</p>
+<h5 id="1）字符函数-upper-lower"><a href="#1）字符函数-upper-lower" class="headerlink" title="1）字符函数:upper,lower"></a>1）字符函数:upper,lower</h5><h5 id="2）数值函数"><a href="#2）数值函数" class="headerlink" title="2）数值函数:"></a>2）数值函数:</h5><pre><code>round 四舍五入
+round(12.345,2)--&gt;12.35
+round(12.345,0)=round(12.345)--&gt;12
+round(12,345,-1)--&gt;10
+trunc 截取
+trunc(12.345,2)--&gt;12.34
+trunc(12.345,0)=trunc(12.345)--&gt;12
+trunc(12,345,-1)--&gt;10
+</code></pre><h5 id="3-日期和日期函数"><a href="#3-日期和日期函数" class="headerlink" title="3) 日期和日期函数"></a>3) 日期和日期函数</h5><pre><code>select sysdate from dual
+06-SEP-12 DD-MON-RR 
+alter session set
+  nls_date_format = &apos;yyyy mm dd hh24:mi:ss&apos;
+session 会话 connection(连接)
+</code></pre><p>   日期类型的数据是用固定的字节7个字节来存储世纪,年,月,日,时,分,秒. 格式敏感<br>   会话级 alter session set nls_date_format<br>   语句级 select to_char(c1日期类型用7个字节来表达，日期类型的数据是用固定的字节7个字节来存储世纪，年，月，日，时，分，秒。四位年的前两位代表世纪20，后两位代表当前年12<br>如果不想修改sql语句运行的话，就需要在执行该语句之前，使用alter session 命令将nls_date_language修改为american，如下：<br>alter session set nls_date_language=’american’    –以英语显示日期<br>如果不想修改sql语句运行的话，就需要在执行该语句之前，使用alter session 命令将</p>
+<p>‘01-JAN-08’ 系统做了隐式数据类型转换,调用了to_date函数<br>‘2008-01-01’,用户做显式数据类型转换,自己调用<br>to_date(‘2008-01-01’,’yyyy-mm-dd’),第二个参数是对第一个参数的格式说明.<br>to_char的返回类型是字符类型,把date转换成了字符串类型,所以参数的数据类型是date.to_char函数可以获得日期的任何一部分信息,比如年,月,日等.<br>select c1 from … 系统做了隐式数据类型转换,调用了to_char函数<br>select to_char(c1,.. 用户做显式数据类型转换,自己调用to_char(c1,’yyyy-mm-dd’),第二个参数是对第一个参数的格式说明.<br>日期的运算<br>   日期可以加减一个数值,单位为天.<br>   select sysdate-1,sysdate,sysdate+1 from dual<br>两个日期相减<br>   add_months 按月加 返回类型是date<br>   add_months(sysdate,6)<br>   select add_months(hiredate,6) from emp_hiloo<br>   add_months(sysdate,-6)<br>   months_between()  返回类型是number<br>   months_between(sysdate,hiredate) 两个日期之间相差多少个月<br>select months_between(sysdate,hiredate) from emp_hiloo;<br>   last_day(sysdate) 本月的最后一天</p>
+<h5 id="4-转换函数"><a href="#4-转换函数" class="headerlink" title="4) 转换函数"></a>4) 转换函数</h5><p>两个日期相减转换函数<br>to_date  char–&gt;date<br>to_char  date–&gt;char , number –&gt; char<br>to_number  char–&gt;number</p>
+<h5 id="其他函数"><a href="#其他函数" class="headerlink" title="其他函数"></a>其他函数</h5><p>coalesce 类似nvl(oracle专有)<br>nvl(bonus,salary<em>0.1)<br>coalesce(bonus,salary</em>0.1,100)。输出所有员工的奖金，如果没有奖金就按工资的10%发放，如果奖金和工资都没有的临时工，就给100元。<br>不同的记录处理方式不一样时,用case when.<br>case when 条件表达式 then 返回结果<br>else<br>     返回结果<br>end<br>若没有else,当不匹配条件,表达式的返回值为null.<br>case deptno when 10 then(不建议该语法形式)<br>decode跟case when的功能类似.<br>decode(deptno,10,salary<em>1.1,<br>              20,salary</em>1.2,<br>              salary)<br>若没有最后一个参数,函数的返回值为null.<br>select语句<br>order by子句<br>select   from    where<br>order by<br>order by子句是select语句中的最后一个子句.<br>order by salary 缺省是升序 asc<br>order by salary desc 降序<br>order by子句后面可以跟列名,表达式(函数),列别名,在select子句中的位置.<br>ORDER BY 子句<br>ORDER BY 语句用于对结果集进行排序。<br>ORDER BY 语句<br>ORDER BY 语句用于根据指定的列对结果集进行排序。<br>ORDER BY 语句默认按照升序对记录进行排序。<br>如果您希望按照降序对记录进行排序，可以使用 DESC 关键字。<br>原始的表 (用在例子中的)：<br>Orders 表:<br>Company    OrderNumber<br>IBM    3532<br>W3School    2356<br>Apple    4698<br>W3School    6953<br>实例 1<br>以字母顺序显示公司名称：<br>SELECT Company, OrderNumber FROM Orders ORDER BY Company<br>结果：<br>Company    OrderNumber<br>Apple    4698<br>IBM    3532<br>W3School    6953<br>W3School    2356<br>实例 2<br>以字母顺序显示公司名称（Company），并以数字顺序显示顺序号（OrderNumber）：<br>SELECT Company, OrderNumber FROM Orders ORDER BY Company, OrderNumber<br>结果：<br>Company    OrderNumber<br>Apple    4698<br>IBM    3532<br>W3School    2356<br>W3School    6953<br>实例 3<br>以逆字母顺序显示公司名称：<br>SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC<br>结果：<br>Company    OrderNumber<br>W3School    6953<br>W3School    2356<br>IBM    3532<br>Apple    4698<br>实例 4<br>以逆字母顺序显示公司名称，并以数字顺序显示顺序号：<br>SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC, OrderNumber ASC<br>结果：<br>Company    OrderNumber<br>W3School    2356<br>W3School    6953<br>IBM    3532<br>Apple    4698<br>注意：在以上的结果中有两个相等的公司名称 (W3School)。只有这一次，在第一列中有相同的值时，第二列是以升序排列的。如果第一列中有些值为 nulls 时，情况也是这样的。</p>
+<h4 id="2-多行函数-哪两个函数里只能放number"><a href="#2-多行函数-哪两个函数里只能放number" class="headerlink" title="2) 多行函数(哪两个函数里只能放number)"></a>2) 多行函数(哪两个函数里只能放number)</h4><p>avg()    平均值  函数的参数只能是number<br>sum()    求和    函数的参数只能是number<br>count()    计数 函数的参数可以是number date 字符<br>        count(*)统计记录,count(bonus)<br>max() 最大值 函数的参数可以是number date 字符<br>min() 最小值 函数的参数可以是number date 字符</p>
+<p>组函数的缺省处理方式是处理所有的非空值.<br>avg(bonus) 所有有奖金的员工的平均值<br>count(bonus) 有奖金的员工个数<br>当所有的值都是null,count函数返回0,其他组函数返回null.</p>
+<h4 id="3-group-by子句"><a href="#3-group-by子句" class="headerlink" title="3) group by子句"></a>3) group by子句</h4><p>若有group by子句,select后面跟组标识和组函数<br>组标识指group by后面的内容<br>from–&gt;where–&gt;group by–&gt;select–&gt;order by<br>若没有group by子句,select后面只要有一个是组函数,其余的都得是组函数.</p>
+<h4 id="having子句"><a href="#having子句" class="headerlink" title="having子句"></a>having子句</h4><p>select deptno,round(avg(salary)) davg<br>from emp_hiloo<br>group by deptno<br>having round(avg(salary))&gt; 5000</p>
+<p>from–&gt;where–&gt;group by–&gt;having–&gt;select–&gt;order by </p>
+<h4 id="GROUP-BY-语句"><a href="#GROUP-BY-语句" class="headerlink" title="GROUP BY 语句"></a>GROUP BY 语句</h4><p>GROUP BY 语句用于结合合计函数，根据一个或多个列对结果集进行分组。<br>SQL GROUP BY 语法<br>SELECT column_name, aggregate_function(column_name)<br>FROM table_name<br>WHERE column_name operator value<br>GROUP BY column_name<br>SQL GROUP BY 实例<br>我们拥有下面这个 “Orders” 表：<br>O_Id    OrderDate    OrderPrice    Customer<br>1    2008/12/29    1000    Bush<br>2    2008/11/23    1600    Carter<br>3    2008/10/05    700    Bush<br>4    2008/09/28    300    Bush<br>5    2008/08/06    2000    Adams<br>6    2008/07/21    100    Carter<br>现在，我们希望查找每个客户的总金额（总订单）。我们想要使用 GROUP BY 语句对客户进行组合。<br>我们使用下列 SQL 语句：<br>SELECT Customer,SUM(OrderPrice) FROM Orders<br>GROUP BY Customer<br>结果集类似这样：<br>Customer    SUM(OrderPrice)<br>Bush    2000<br>Carter    1700<br>Adams    2000<br>很棒吧，对不对？<br>让我们看一下如果省略 GROUP BY 会出现什么情况：<br>SELECT Customer,SUM(OrderPrice) FROM Orders<br>结果集类似这样：<br>Customer    SUM(OrderPrice)<br>Bush    5700<br>Carter    5700<br>Bush    5700<br>Bush    5700<br>Adams    5700<br>Carter    5700<br>上面的结果集不是我们需要的。<br>那么为什么不能使用上面这条 SELECT 语句呢？解释如下：上面的 SELECT 语句指定了两列（Customer 和 SUM(OrderPrice)）。”SUM(OrderPrice)” 返回一个单独的值（”OrderPrice” 列的总计），而 “Customer” 返回 6 个值（每个值对应 “Orders” 表中的每一行）。因此，我们得不到正确的结果。不过，您已经看到了，GROUP BY 语句解决了这个问题。<br>GROUP BY 一个以上的列<br>我们也可以对一个以上的列应用 GROUP BY 语句，就像这样：<br>SELECT Customer,OrderDate,SUM(OrderPrice) FROM Orders<br>GROUP BY Customer,OrderDate</p>
+<h4 id="4-where和having比较"><a href="#4-where和having比较" class="headerlink" title="4) where和having比较"></a>4) where和having比较</h4><p>共同点:都执行在select之前,都有过滤功能<br>区别<br>where执行在having之前<br>where过滤的是记录,任意列名都可以出现在where子句,单行函数可以用在where子句,组函数不能出现在where子句<br>having过滤的是组,组标识可以出现在having子句,其他列名不行,组函数用于having子句,单行函数不可以.</p>
+<h5 id="HAVING-子句"><a href="#HAVING-子句" class="headerlink" title="HAVING 子句"></a>HAVING 子句</h5><p>在 SQL 中增加 HAVING 子句原因是，WHERE 关键字无法与合计函数一起使用。<br>SQL HAVING 语法<br>SELECT column_name, aggregate_function(column_name)<br>FROM table_name<br>WHERE column_name operator value<br>GROUP BY column_name<br>HAVING aggregate_function(column_name) operator value<br>SQL HAVING 实例<br>我们拥有下面这个 “Orders” 表：<br>O_Id    OrderDate    OrderPrice    Customer<br>1    2008/12/29    1000    Bush<br>2    2008/11/23    1600    Carter<br>3    2008/10/05    700    Bush<br>4    2008/09/28    300    Bush<br>5    2008/08/06    2000    Adams<br>6    2008/07/21    100    Carter<br>现在，我们希望查找订单总金额少于 2000 的客户。<br>我们使用如下 SQL 语句：<br>SELECT Customer,SUM(OrderPrice) FROM Orders<br>GROUP BY Customer<br>HAVING SUM(OrderPrice)<2000 1500="" 1700="" 结果集类似：="" customer="" sum(orderprice)="" carter="" 现在我们希望查找客户="" "bush"="" 或="" "adams"="" 拥有超过="" 的订单总金额。="" 我们在="" sql="" 语句中增加了一个普通的="" where="" 子句：="" select="" customer,sum(orderprice)="" from="" orders="" or="" group="" by="" having="">1500<br>结果集：<br>Customer    SUM(OrderPrice)<br>Bush    2000<br>Adams    2000</2000></p>
+<h4 id="5-DCL"><a href="#5-DCL" class="headerlink" title="5) DCL"></a>5) DCL</h4><p>connect openlab/open123<br>select count(*) from hiloo.emp_hiloo;</p>
+<p>connect hiloo/hiloo123<br>grant select on emp_hiloo to openlab;</p>
+<p>connect openlab/open123<br>select count(*) from hilool.emp_hiloo<br>10rows selected</p>
+<p>connect hiloo/hiloo123<br>revoke select on emp_hiloo from openlab;</p>
+<p>show user<br>select count(*) from hiloo.emp_hiloo</p>
+<p>create synonym emp_hiloo for hiloo.emp_hiloo</p>
+<h4 id="6-关于null值的讨论"><a href="#6-关于null值的讨论" class="headerlink" title="6) 关于null值的讨论"></a>6) 关于null值的讨论</h4><p>1 case when在没有else和decode少一个参数时,返回null.<br>2order by bonus,asc升序时null值在最后,desc降序时null在最前.<br>3 组函数和null值的关系:1组函数的缺省处理方式是处理所有的非空值.2当所有的值都是null,count函数返回0,其他组函数返回null.<br>4若group by的列有null值,所有的null值分在一组.<br>课堂练习<br>1将每个员工的工资涨12.34567%,用round和trunc分别实现<br>select ename,nvl(trunc(round(salary+salary*0.1234567,2),1),0.0) from emp_hiloo;//自己写的。<br>2 将’2008-01-01’插入表中,<br>  再将’2008 08 08 08:08:08’插入表中<br>insert into test values<br>(to_date(‘01-JAN-08’,’DD-MON-RR’));</p>
+<p>3找出3月份入职的员工.<br>select ename,hiredate<br>from emp_hiloo<br>where to_char(hiredate,’mm’) = ‘03’;<br>select ename,hiredate<br>from emp_hiloo<br>where to_char(hiredate,’mm’) = 3;//可以正常输出winXP下<br>‘03’ = 3  —&gt; to_number(‘03’) = 3<br>字符   数值  缺省系统将字符转成数值<br>select ename,hiredate<br>from emp_hiloo<br>where to_char(hiredate,’fmmm’) = ‘03’;(错，未选定行，无输出)</p>
+<p>select ename,hiredate<br>from emp_hiloo<br>where to_char(hiredate,’fmmm’) = ‘3’;(对)<br>‘03’ = ‘3’ (错)<br>fm表示去掉前导0或去掉两边的空格.<br>4 zhangsanfeng的mgr上显示boss,其他人不变.<br>select ename,empno,<br>       nvl(to_char(mgr),’boss’) mgr<br>from emp_hiloo<br>函数nvl（“1”，“2”）:如果字符串1是空，就返回字符串”2”</p>
+<h4 id="5十分钟之后"><a href="#5十分钟之后" class="headerlink" title="5十分钟之后"></a>5十分钟之后</h4><p> select sysdate,sysdate+1/144 from dual;<br>解释：Oracle 里面,</p>
+<p>sysdate + 1 意思是 当前时间 + 1天</p>
+<p>sysdate + 1/24  意思是 当前时间 + 1/24天  也就是1小时后</p>
+<p>sysdate+1/144  意思是 当前时间 + 1/144天 （1/24<em>6）  也就是10分钟后<br> 6 若员工是10部门的,工资涨10%,20部门工资涨20%,其他员工工资不变.<br>select ename,salary,<br>       case when deptno = 10 then salary</em>1.1<br>            when deptno = 20 then salary*1.2<br>       else<br>            salary<br>       end new_sal<br>from emp_hiloo;</p>
+<p>select ename,salary,<br>       decode(deptno,10,salary<em>1.1,<br>                     20,salary</em>1.2,<br>                     salary) new_sal<br>from emp_hiloo;<br>7 列出每个员工的年薪,按年薪降序排列.<br>select ename,salary<em>12<br>from emp_hiloo<br>order by salary desc (好)<br>select ename,salary</em>12<br>from emp_hiloo<br>order by salary<em>12 desc<br>select ename,salary</em>12 n_sal<br>from emp_hiloo<br>order by n_sal desc</p>
+<p>select ename,salary<em>12 n_sal from emp_hiloo order by 2 desc;<br>select salary</em>12,ename n_sal from emp_hiloo order by 2 asc;<br>8 列出员工的名字,部门号以及工资,按部门号从小到大的顺序,同一部门的工资按降序排列.<br>select ename,deptno,salary<br>from emp_hiloo<br>order by deptno,salary desc<br>9 列出奖金的平均值,和,个数,最大值,最小值.<br>AVG 函数返回数值列的平均值。NULL 值不包括在计算中<br>select avg(bonus),avg(nvl(bonus,0)),<br>       sum(bonus), sum(nvl(bonus,0)),<br>       count(bonus),count(nvl(bonus,0)),<br>       max(bonus),max(nvl(bonus,0)),<br>       min(bonus),min(nvl(bonus,0))<br>from emp_hiloo<br>10 各个部门的平均工资<br>ROUND 函数用于把数值字段舍入为指定的小数位数。<br>select deptno,round(avg(salary))<br>from emp_hiloo<br>group by deptno<br>11 求10部门的平均工资,只显示平均工资<br>   求10部门的平均工资,显示部门号,平均工资<br>   select round(avg(salary))<br>   from emp_hiloo<br>   where deptno = 10<br>   group by deptno</p>
+<p>   select max(deptno),round(avg(salary))<br>   from emp_hiloo<br>   where deptno = 10<br>12各个部门不同职位的平均工资<br>   select deptno,job,round(avg(salary))<br>   from emp_hiloo<br>   group by deptno,job<br>13 每种奖金有多少人?<br>   select bonus,count(empno)<br>   from emp_hiloo<br>   group by bonus<br>14 列出平均工资大于5000的部门的平均工资<br>   select deptno,round(avg(salary))<br>   from emp_hiloo<br>   group by deptno<br>   having round(avg(salary)) &gt; 5000<br>15哪些员工的工资是最低的.<br>  select ename from emp_hiloo<br>  where salary = ( select min(salary)<br>                   from emp_hiloo)<br>报错信息<br>ORA-01861: literal does not match format string<br>文字值不匹配格式串<br>ORA-01722: invalid number 无效的数值 to_number<br>ORA-00937: not a single-group group function 不是一个组函数<br>ORA-00979: not a GROUP BY expression 不是一个group by表达式 GROUP BY expression指跟在group by后面的东西(列名),称之为组标识<br>detail 细节 summary 聚合</p>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>子查询定义<br>在SQL语句中嵌入select语句<br>create table new_tabname<br>as<br>select ename,salary*12 ann_sal from emp_hiloo;<br>新表的结构由select后面的项来决定,new_table包含两列ename,ann_sal.</p>
+<h4 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h4><p>  非关联子查询<br>    单列子查询<br>    多列子查询<br>  关联子查询</p>
+<h5 id="子查询执行"><a href="#子查询执行" class="headerlink" title="子查询执行"></a>子查询执行</h5><p>非关联子查询<br>子查询的表和主查询的表没有建关联<br>先执行子查询(只执行一遍),当返回多条记录,系统会将自动去重的结果返回给主查询,再执行主查询.</p>
+<p>关联子查询<br>子查询的表和主查询的表建关联.所谓建关联指主查询表里的列和子查询表里的列写成一个条件表达式.</p>
+<p>先执行主查询,判断表里的记录是否应该放入结果集.过程如下:拿到第一条记录,获得了各个列的值,将需要的列值带入子查询,执行后返回的结果再和主查询表里的列做比较,符合条件,该记录放入结果集,否则过滤掉.依次执行主查询表里的每条记录.子查询执行的次数由主查询表里的记录数决定.</p>
+<p>1) exists和not exists<br>exists的执行过程<br>从主查询表里拿到第一条记录,按子查询里的关联条件在子查询的表里看是否能找到匹配的记录,当找到第一条匹配的记录后,立即返回(即不需要找出所有匹配的记录),exists条件满足,主查询表里的该记录放入结果集.若按子查询里的关联条件将子查询<br>表里的记录全部检查一遍后没有一条符合条件的记录,此时也返回, exists 条件不满足,主查询表里的该记录不能放入结果集,被过滤掉.</p>
+<p>select ename from emp_afei o<br>where exists<br>             (select 1 from emp_afei i<br>              where o.empno = i.mgr)</p>
+<h5 id="非关联子查询的分类"><a href="#非关联子查询的分类" class="headerlink" title="非关联子查询的分类"></a>非关联子查询的分类</h5><p>单列子查询<br>select ename,salary<br>from emp_hiloo<br>where salary = (select min(salary)<br>                from emp_hiloo<br>                )<br>多列子查询:按键值对比较<br>select ename,salary,deptno<br>from emp_afei<br>where (deptno,salary) in<br>             (select deptno,round(avg(salary))<br>              from emp_afei<br>              group by deptno)</p>
+<p>2) 课堂练习<br>1哪些人是领导?(非关联子查询)<br>如果一个员工的empno能出现在mgr里就说明他是领导.<br>select ename<br>from emp_hiloo<br>where empno in (select mgr from emp_hiloo)<br>select ename<br>fro emp_afei<br>where empno in (1001,1005,1006,1008,null)<br>2 哪些人是员工?<br>他的empno绝对不能出现在mgr中,他的empno跟mgr的出现的所有的值不能相等. &lt;&gt;all<br>select ename<br>from emp_hiloo<br>where empno not in (select mgr from emp_hiloo)<br>select ename<br>fro emp_afei<br>where empno not in (1001,1005,1006,1008,null)<br>select ename<br>from emp_hiloo<br>where empno not in (select mgr from emp_hiloo<br>                    where mgr is not null)</p>
+<p>3哪些部门的平均工资比30部门的平均工资高?<br>select deptno,round(avg(salary))<br>from emp_hiloo<br>group by deptno<br>having round(avg(salary)) &gt;<br>                    (select round(avg(salary))<br>                     from emp_hiloo<br>                     where deptno = 30)<br>4哪些员工的工资比zhangwuji的工资高?<br>select ename,salary<br>from emp_afei<br>where salary &gt; (select salary from emp_afei<br>                where ename = ‘zhangwuji’)<br>ERROR at line 3:<br>ORA-01427: single-row subquery returns more than one row<br>单行子查询返回多条记录</p>
+<p>比所有人高 &gt; (select max(salary))<br>           &gt;all<br>比任意人高 &gt; (select min(salary)<br>           &gt;any<br>5哪些员工的工资等于本部门的平均工资?<br>select ename,salary,deptno<br>from emp_afei<br>where (deptno,salary) in<br>             (select deptno,round(avg(salary))<br>              from emp_afei<br>              group by deptno)<br>5哪些员工的工资比本部门的平均工资高?<br>select ename,salary,deptno<br>from emp_afei o<br>where salary &gt; (select round(avg(salary))<br>                from emp_afei i<br>                where i.deptno = o.deptno)<br>6哪些人是领导?(关联子查询)<br>select ename from emp_afei o<br>where exists<br>             (select 1 from emp_afei i<br>              where o.empno = i.mgr)<br>7哪些部门有员工?<br>select deptno,dname<br>from dept_afei o<br>where exists (select 1 from emp_afei i<br>              where o.deptno = i.deptno)</p>
+<p>3) 课外练习day03am<br>1 zhangwuji的领导是谁,显示名称?<br>2 zangwuji领导谁,显示名称?<br>3 列出devoleper部门有哪些职位?<br>1) 课外练习day04am答案<br>1 zhangwuji的领导是谁,显示名称?<br>  select ename from emp_afei<br>  where empno in<br>        (select mgr from emp_afei<br>                 where ename = ‘zhangwuji’)</p>
+<p>zangwuji领导谁,显示名称?</p>
+<p> select ename from emp_afei<br> where mgr in (select empno from emp_afei<br>               where ename = ‘zhangwuji’)</p>
+<p>3 列出developer部门有哪些职位?<br>  select distinct job from emp_afei<br>  where deptno in<br>           (select deptno from dept_afei<br>            where dname = ‘developer’)</p>
+<p>2) 非关联子查询<br>exists和not exists<br>not exists的执行过程<br>从主查询表里拿到第一条记录,按子查询里的关联条件在子查询的表里看是否能找到匹配的记录,当找到第一条匹配的记录后,立即返回(即不需要找出所有匹配的记录),not exists条件不满足,主查询表里的该记录不能放入结果集,被过滤掉.若按子查询里的关联条件将子查询表里的记录全部检查一遍后没有一条符合条件的记录,返回, not exists 条件满足,主查询表里的该记录放入结果集.</p>
+<p>对于exists和not exists,在子查询中找到第一条匹配的记录都会立即返回,exists将主查询表里的记录放入结果集,not exsits将主查询表里的记录过滤掉.<br>对于exists和not exists,如果子查询没有返回任何记录,即扫描全部记录后没有一条符合条件的记录,都返回,exists将主查询表里的记录过滤掉,not exists将主查询表里的记录放入结果集.<br>not in ,&lt;&gt; all逻辑上跟not exists等价<br>in ,=any逻辑上跟exists等价</p>
+<p>查询形式:集合操作<br>把结果集作为一个集合,结果集必须是同构的,列的个数及数据类型一致</p>
+<p>3) 并集  union(去重)/union all(不去重)<br>select ename,deptno,salary,salary<em>1.1 new_sal<br>from emp_afei<br>where deptno = 10<br>union all<br>select ename,deptno,salary,salary</em>1.2 new_sal<br>from emp_afei<br>where deptno = 20<br>union all<br>select ename,deptno,salary,salary new_sal<br>from emp_afei<br>where deptno not in (10,20)</p>
+<p>case when和decode可以实现类似功能.</p>
+<p>4) 交集  intersect(去重)<br>select job from emp_afei<br>where deptno = 10<br>intersect<br>select job from emp_afei<br>where deptno = 20<br>10部门和20部门都有的职位是哪些?</p>
+<p>5) 差  minus(去重)<br>select deptno from dept_afei<br>minus<br>select deptno from emp_afei<br>那些部门没有员工.</p>
+<p>6) 多表查询<br>1) 交叉连接 cross join<br>select e.ename,d.dname<br>from emp_afei e cross join dept_afei d<br>结果集产生<br>10*4=40,组合操作,笛卡尔积</p>
+<p>2) 内连接 inner join(匹配一个条件)<br>select e.ename,e.deptno,d.deptno,d.dname<br>from emp_afei e join dept_afei d<br>ORA-00905: missing keyword(丢失关键字)</p>
+<p>如果把结果集的产生看成双层循环,驱动表是外层循环,匹配表是内层循环.<br>对于内连接哪张表做驱动表,哪张表做匹配表产生出的结果集是一样的,不同的是性能.<br>驱动表在匹配表的匹配情况如下:<br>一条记录找到一条匹配<br>一条记录找到多条匹配<br>一条记录找不到任何匹配.<br>内连接的核心是驱动表的记录要出现在结果集中必须在匹配表中能找到匹配的记录,否则该记录被过滤掉.</p>
+<p>3) 内连接查询形式<br>等值连接 on e.deptno = d.deptno<br>两张表有表述同一属性的列,两张表都有deptno列.<br>自连接 on e.mgr = m.empno<br>同一张表的不同列能写成一个表达式,即同一张表的两条记录之间有关系.通过给表起别名的方式,将同一张表的两条记录之间的关系转化成不同表的两条记录之间的关系.<br>4) 外连接<br>外连接 outer join(驱动表的记录一个都不能少的出现在结果集里)<br>from t1 left join t2<br>on t1.c1 = t2.c2(t1驱动表,t2匹配表)<br>外连接结果集=内连接的结果集+t1表中匹配不上的记录和t2表中的null记录的组合<br>from t1 right join t2<br>on t1.c1 = t2.c2(t2驱动表,t1匹配表)<br>外连接结果集=内连接的结果集+t2表中匹配不上的记录和t1表中的null记录的组合<br>from t1 full join t2<br>on t1.c1 = t2.c2<br>外连接结果集=内连接的结果集+t1表中匹配不上的记录和t2表中的null记录的组合+t2表中匹配不上的记录和t1表中的null记录的组合</p>
+<p>5) 外连接的应用场景<br>1 某张表的记录全部出现在结果集中,包括匹配不上的.<br>select e.ename,nvl(m.ename,’Boss’)<br>from emp_afei e left join emp_afei m<br>on e.mgr = m.empno<br>2解决否定问题,匹配不上的记录找出来(跟所有的记录都不匹配.)(not in/not exists)<br>外连接 + where 匹配表.主键列 is null<br>select e.ename,d.dname<br>from emp_afei e right join dept_afei d<br>on e.deptno = d.deptno<br>where e.empno is null<br>(解决结果集只包含匹配不上的记录.where子句执行在外连接之后)哪些部门没有员工</p>
+<p>select d.dname<br>from emp_afei e right join  dept_afei d<br>on e.deptno = d.deptno<br>and e.ename = ‘zhangwuji’<br>where e.empno is null<br>如果希望在外连接之前过滤匹配表用and子句,如果想在外连接之后通过匹配表里的列过滤外连接的结果集时候用where.<br>过滤驱动表统计用where子句过滤.</p>
+<p>6) 课内练习<br>1 哪些部门没有员工(not exists)<br>  select dname from dept_afei o<br>  where not exists<br>        (select 1 from emp_afei i<br>         where o.deptno = i.deptno)<br>2 哪些人是员工?(not exists)<br>  select ename from emp_afei o<br>  where not exists<br>            (select 1 from emp_afei i<br>             where o.empno = i.mgr)<br>他的empno和其他人的mgr相等是不可能存在的.即和所有人的mgr都不相等.<br>not in ,&lt;&gt; all逻辑上跟not exists等价<br>3 列出哪些员工在北京地区上班?<br>思路:确定表,两张表,匹配问题用inner join–&gt;on(匹配条件)–&gt;(对表是否过滤)<br>select e.ename,e.deptno,d.deptno,d.dname<br>from emp_afei e join dept_afei d<br>on e.deptno = d.deptno<br>and d.location = ‘beijing’<br>4zhangwuji在哪个地区上班?<br>select e.ename,d.dname,d.location<br>from emp_afei e join dept_afei d<br>on e.deptno = d.deptno<br>and e.ename = ‘zhangwuji’<br>5列出每个部门有哪些职位?部门名称,职位<br> select distinct d.dname,e.job<br> from emp_afei e join dept_afei d<br> on e.deptno = d.deptno<br> order by d.dname<br>6各个部门的平均工资,列出部门名称,平均工资.<br>select d.dname,round(avg(e.salary)) savg<br>from emp_afei e join dept_afei d<br>on e.deptno = d.deptno<br>group by d.dname<br>select max(d.dname),round(avg(e.salary)) savg<br>from emp_afei e join dept_afei d<br>on e.deptno = d.deptno<br>group by d.deptno<br>select min(deptno),round(avg(salary))<br>from emp_hiloo<br>where deptno = 10<br>7 列出每个员工的名字和他的领导的名字<br>select e.ename employee,<br>       m.ename manager<br>from emp_afei e join emp_afei m<br>on e.mgr = m.empno<br>结果集是9条.<br>e表中有10条记录,其中9条记录找到匹配,zhangsanfeng没匹配<br>m表中有10条记录,其中4条记录找到匹配,4条记录是领导,6条记录找不到匹配,他们是员工.<br>select e.ename employee,<br>       m.ename manager<br>from emp_afei e join emp_afei m<br>on e.mgr = m.empno<br>union all<br>select ename,’Boss’<br>from emp_afei<br>where mgr is null</p>
+<p>select e.ename employee,<br>       decode(m.ename,e.ename,’Boss’,<br>                  m.ename)   manager<br>from emp_afei e join emp_afei m<br>on nvl(e.mgr,e.empno) = m.empno</p>
+<p>select e.ename,nvl(m.ename,’Boss’)<br>from emp_afei e left join emp_afei m<br>on e.mgr = m.empno<br>10=9+1</p>
+<p>8哪些人是领导?<br>select distinct m.ename<br>from emp_afei e join emp_afei m<br>on e.mgr = m.empno<br>9哪些部门没有员工?<br>select e.ename,d.dname<br>from emp_afei e right join dept_afei d<br>on e.deptno = d.deptno<br>where e.empno is null<br>(解决结果集只包含匹配不上的记录.where子句执行在外连接之后)<br>11=10+1<br>如果部门表里的某条记录的deptno在emp表找不到匹配,在内连接中,它被过滤,<br>e表的empno的特性是唯一且非空的(主键约束),居然e.empno is null,说明null是外连接时为了驱动表中那条匹配不上的记录出现在结果集中,在匹配表中模拟的null记录.<br>10哪些人是员工,哪些人不是领导?<br>select e.empno,m.ename<br>from emp_afei e right join emp_afei m<br>on e.mgr = m.empno<br>where e.empno is null</p>
+<p>from emp_afei e right join emp_afei m<br>15=9+(10(m表中有10条记录)-4(m表中有4条匹配记录 ))<br>from emp_afei e left join emp_afei m<br>10(结果集)=9+(10(e表中有10条记录)-9(e表中有9条匹配记录))<br>11 哪些部门没有叫zhangwuji的?<br>select d.dname<br>from emp_afei e right join  dept_afei d<br>on e.deptno = d.deptno<br>and e.ename = ‘zhangwuji’<br>where e.empno is null</p>
+<p>7) 课外练习(day04)(答案在Day05)<br>1zhangwuji的领导是谁?(表连接)<br>2zhangwuji领导谁?(表连接)<br>3哪些人是领导?(in exists join)<br>4哪些部门没有员工?(not in/not exists/outer join)<br>5哪些人是员工,哪些人不是领导?(not in/not exists/outer join)<br>Day05.txt<br>Grade级别<br>Lowsal最低工资<br>Hisal最高工资<br>Create table salgrade_hiloo(<br>Grade<br>)<br>cross join  inner join   outer join<br>inner join(匹配)<br>  等值连接<br>  自连接<br>  非等值连接<br>outer join(匹配+不匹配)<br>  等值连接</p>
+<p>  自连接<br>  非等值连接</p>
+<p>所谓非等值连接表示两张表里的列不能写成等值表达式,而是写成between and之类.所以两个表之间有关系是指表里的列可以写成表达式,而不是等值表达式.<br>salgrade<br>grade  级别<br>lowsal 最低工资<br>hisal  最高工资</p>
+<p>from后面跟子查询<br>emp,各个部门的平均工资dept_avgsal(depnto,avgsal)<br>select e.ename,e.salary,e.deptno<br>from emp_afei e join<br>      (select deptno,round(avg(salary)) avgsal<br>       from emp_afei<br>       group by deptno) a<br>on e.deptno = a.deptno<br>and e.salary &gt; a.avgsal</p>
+<p>各个部门的平均工资,列出部门名称,平均工资<br>select max(d.dname),round(avg(salary))<br>from emp_afei e join dept_afei d<br>on e.deptno = d.deptno<br>group by d.deptno</p>
+<p>select d.dname,a.avgsal<br>from dept_afei d join<br>      (select deptno,round(avg(salary)) avgsal<br>       from emp_afei<br>       group by deptno) a<br>on d.deptno = a.depto</p>
+<p>DML<br>insert一条记录时,若某些列为null值,有哪些语法实现?<br>insert into tabname values (1,’a’,null,sysdate)<br>insert into tabname(c1,c2,c4)<br>values (1,’a’,sysdate)<br>insert语句的两种语法形式?<br>insert into tabname values () insert一条记录<br>insert into tabname<br>select * from tabname1  insert多条记录<br>连接图解：</p>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>1) 课外练习答案day04<br>1zhangwuji的领导是谁?(表连接)<br> select m.ename<br> from emp_afei e join emp_afei m<br> on e.mgr = m.empno<br> and m.ename = ‘zhangwuji’<br>2 zhanghangwuji领导谁?(表连接)<br> select e.ename<br> from emp_afei e join emp_afei m<br> on e.mgr = m.empno<br> and m.ename = ‘zhangwuji’<br>3哪些人是领导?(in exists join)<br> select ename from emp_afei<br> where empno in (select mgr from emp_afei)<br> select ename from emp_afei o<br> where exists<br>            (select 1 from emp_afei i<br>             where o.empno = i.mgr)<br> select distinct m.ename<br> from emp_afei e join emp_afei m<br> on e.mgr = m.empno<br>4哪些部门没有员工?(not in/not exists/outer join)<br> select dname from dept_afei<br> where deptno not in<br>               (select deptno from emp_afei)<br> select dname from dept_afei o<br> where not exists<br>             (select 1 from emp_afei i<br>              where o.deptno = i.deptno)<br> select d.dname<br> from emp_afei e right join dept_afei d<br> on e.deptno = d.deptno<br> where e.empno is null<br>5哪些人是员工,哪些人不是领导?(not in/not exists/outer join)<br> select ename from emp_afei<br> where empno not in (<br>               select mgr from emp_afei<br>               where mgr is not null)<br> select ename from emp_afei o<br> where not exists<br>             (select 1 from emp_afei i<br>              where o.empno = i.mgr)<br> select m.ename<br> from emp_afei e right join emp_afei m<br> on e.mgr = m.empno<br> where e.empno is null<br>cross join (笛卡尔积)</p>
+<p>rownum 伪列,记录号<br>若用rownum选择出记录,编号必须从1开始.<br>分页问题<br>第一页<br>select rownum,ename<br>from emp_afei<br>where rownum &lt;= 3;<br>第二页<br>select rn,ename<br>from (<br>      select rownum rn,ename<br>      from emp_afei<br>      where rownum &lt;= 6)<br>where rn between 4 and 6<br>排名问题<br>按工资排名的前三条记录<br>select rownum,ename,salary<br>from emp_hiloo<br>where rownum &lt;=3<br>order by salary desc;(错)</p>
+<p>select rownum,ename,salary<br>from ( select ename,salary<br>       from emp_afei<br>       order by salary desc)<br>where rownum &lt;= 3</p>
+<p>update语句的中set后面的=是什么含义?where后面的=是什么含义?<br>set c1 = null (= 赋值)<br>where c1 = null (= 等号)</p>
+<p>update和delete语句中的where子句是什么含义?<br>用来确定对表里的哪些记录要进行update或delete操作,没有where子句多表里的所有记录update或delete<br>update<br>set<br>where c1 = (select …)<br>rename 关键字 17<br>commit</p>
+<p>1011 abc 1000 10 ‘clerk’<br>update 1001 1000–&gt;2000<br>delete 1011<br>commit<br>如何编写和运行一个sql脚本(文本文件)<br>1 编辑文件<br>在linux环境下已经编写好了test.sql,做一个鼠标右键的copy</p>
+<p>在20,23,26机器上,<br>vi test.sql<br>按a i o进入编辑模式,paste,按esc键,再按:wq!回车</p>
+<p>2 运行文件<br>sun-server% sqlplus openlab/open123 @test.sql<br>@表示运行<br>SP2-0310: unable to open file “test.sql”在当前目录下没有test.sql文件<br>sqlplus openlab/open123 ../test.sql</p>
+<p>cd ..<br>sun-server% sqlplus openlab/open123 @test.sql</p>
+<p>SQL&gt;@test.sql</p>
+<p>数据库对象 PL/SQL<br>create or replace function test<br>insert into test values (1,1)<br>            *<br>ERROR at line 1:<br>ORA-04044: procedure(存储过程), function(函数), package(包), or type is not allowed here</p>
+<p>事务(transaction 交易)<br>事务里包含的DML语句<br>事务的结束<br>commit 提交,(dml操作的数据入库了)<br>rollback 回滚 撤销(DML操作被取消)<br>sqlplus正常退出=commit<br>DDL语句自动提交<br>开始<br>上一个事务的结束是下一个事务的开始.<br>一致状态<br>数据库的数据被事务改变.<br>oltp online transaction processing联机事务处理系统 高并发系统</p>
+<p>事务的隔离级别 read committed(读已经提交了的数据)</p>
+<p>如果不commit—–&gt;commit rollback<br>1如果不commit,其他session是看不见你的操作<br>2如果不commit,会阻塞操作同一条记录的事务(session),commit才能释放所有DML加的锁.<br>3如果不commit,系统做DML操作,会将old data放入rollback segment(回滚段) ,所占用的回滚段资源不释放.</p>
+<p>DML系统会自动给表及表里的记录加锁<br>表级共享锁<br>行级排他锁<br>    表级共享锁     行级排他锁<br>s1    ok        ok<br>s2    ok        enqueue wait<br>s3    ok        ok</p>
+<p>执行DDL语句,系统自动加DDL排他锁<br>SQL&gt; drop table test purge;<br>drop table test purge<br>           *<br>ERROR at line 1:<br>ORA-00054: resource busy(资源忙 test表) and acquire with NOWAIT specified (dml wait,ddl nowait 如果加不上锁,报错退出)</p>
+<p>DDL语句<br>字符类型<br>varchar2,必须带宽度, 按字符串的实际长度存,本身的数据是变化,对空格敏感<br>char,可以不带宽度,缺省宽度是1,按字符串的定义长度存,本身的数据是固定长度的.对空格不敏感<br>数值类型</p>
+<p>number类型<br>create table test90<br>(c1 number,<br> c2 number(6),<br> c3 number(4,2),<br> c4 number(2,4),<br> c5 number(3,-3))</p>
+<p>四舍五入<br>number(6) 表示6为整数 999999<br>number(4,2) 表示小数点后2位,整数位2位 99.99<br>number(2,4) 表示小数点后4位,能填数字的位数是2位 0.0099<br>number(3,-3) 999000 999123–&gt;999000<br>                    999511–&gt;报错</p>
+<p>user_tables 是一张系统表,里面记录当前用户所有的表的信息,里面没有记录表的创建日期.<br>user_objects 是一张系统表,里面记录当前用户所有的数据库对象的信息.created的列记录数据库对象(如表)的创建日期.<br>user_tables和user_objects这两张表的关系体现在table_name和object_name都记录的是表名.</p>
+<p>data block 数据块,操作数据的最小逻辑(物理)单元,最少读一个block的数据</p>
+<p>HWM high water mark 高水位线,表示曾经插入数据的最高位置<br>FTS full table scan 全表扫描,把表里的所有记录读一遍,把HWM之下的所有data block读一遍</p>
+<p>truncate table 释放空间,HWM下移<br>delete 不释放空间,HWM不动<br>不适合用delete命令删大表.</p>
+<p>课内练习<br>1 列出工资级别为3级,5级的员工<br>  select e.ename,e.salary,s.grade<br>  from emp_afei e join salgrade_afei s<br>  on e.salary between s.lowsal and s.hisal<br>  and s.grade in (3,5)<br>2 列出各个工资级别有多少人?<br>  select s.grade,count(e.empno)<br>  from emp_afei e join salgrade_afei s<br>  on e.salary between s.lowsal and s.hisal<br>  group by s.grade<br>  order by s.grade<br>3 列出各个工资级别有多少人?(包含0级)<br>  select s.grade,count(e.empno)<br>  from emp_afei e right join salgrade_afei s<br>  on e.salary between s.lowsal and s.hisal<br>  group by s.grade<br>  order by s.grade<br>特别注意count不要写*或者s.grade</p>
+<p>课外练习day05<br>1按工资排名的第4到第6名员工.</p>
+<p>###关键点###<br>课外练习day05答案</p>
+<p>按工资排名的第4到第6名员工.<br>select rn,ename,salary<br>from<br>    (select rownum rn,ename,salary<br>     from (select ename,salary<br>           from emp_afei<br>           order by salary desc)<br>     where rownum &lt;= 6<br>    )<br>where rn &gt;= 4 </p>
+<p>####1）事务####</p>
+<p>####约束 constraint (安检)####<br>primary key(主键)<br>foreign key(外键)<br>unique key (唯一键)<br>not null(非空)<br>check (检查)</p>
+<p>主键 (表中不会出现重复记录)<br>列级约束<br>create table test<br>(c1 number(2)<br>    constraint test_c1_pk primary key,<br> c2 number(3))</p>
+<pre><code>constraint test_c1_pk primary key,
+           *
+</code></pre><p>ERROR at line 3:<br>ORA-02264: name already used by an existing constraint (名字被存在的约束使用了)</p>
+<p>SQL&gt; select table_name from user_constraints<br>  2  where constraint_name = ‘TEST_C1_PK’;<br>哪张表里有叫TEST_C1_PK这个约束名.</p>
+<p>ORA-00001: unique constraint (HILOO(用户名) .TEST_C1_PK) violated(冲突)</p>
+<p>PK=UK + NN</p>
+<p>表级约束<br>create table test(<br>c1 number(2),<br>c2 number,<br>constraint test_c1_pk primary key(c1)<br>)<br>表中有三列c1,c2,c3,c1和c2做成联合主键<br>create table test(<br>c1 number,<br>c2 number,<br>constraint test_c1_c2_pk primary key(c1,c2),<br>c3 number<br>)<br>没有constraint关键字,系统用自动起名字sys_c数字.</p>
+<p>not null<br>create table test<br>(c1 number constraint test_c1_pk primary key,<br> c2 number not null);<br>not null约束没有表级形式</p>
+<p>unique (pk)<br>相同点:都要保证唯一性<br>区别:uk允许为null,而且可以多个null值,一个表中只能有一个pk约束,可以有多个uk约束.<br>create table test<br>(c1 number constraint test_c1_pk primary key,<br> c2 number constraint test_c2_uk unique)</p>
+<p>create table test(<br>c1 number primary key,<br>c2 number primary key,<br>c3 number unique,<br>c4 number unique)  (报错,一张表只能有一个primary key)</p>
+<p>create table test(<br>c1 number constraint test_c1_pk primary key,<br>c2 number constraint test_c2_uk unique,<br>c3 number constraint test_c3_uk unique,<br>c4 number )<br>c2上定义了一个唯一键 c3上定义了一个唯一键</p>
+<p>create table test(<br>c1 number constraint test_c1_pk primary key,<br>c2 number,<br>c3 number,<br>constraint test_c2_c3_uk unique (c2,c3),<br>c4 number)<br>c2,c3联合唯一键</p>
+<p>check<br>create table test(<br>c1 number(3) constraint test_c1_ck<br>             check (c1 &gt; 100))</p>
+<p>create table test(<br>c1 number(3),<br>constraint test_c1_ck check (c1 &gt; 100))</p>
+<p>外键<br>parent table(父表)上定义唯一列(pk/uk)<br>child table(子表)上定义外键列(fk)</p>
+<p>1 先create parent table(pk/uk),再create child table(fk)<br>2 先insert into parent table,再insert into child table<br>3 先delete from child table,再delete from parent table<br>4 先drop child table,再drop parent table</p>
+<p>reference 引用<br>create table parent<br>(c1 number(3))</p>
+<p>create table child<br>(c1 number(2) constraint child_c1_pk<br>              primary key,<br> c2 number(3) constraint child_c2_fk<br>              references parent(c1))</p>
+<pre><code>references parent(c1))
+                  *
+</code></pre><p>ERROR at line 5:<br>ORA-02270: no matching unique or primary key for this column-list<br>在c1上没有定义uk或pk</p>
+<p>alter table parent<br>add constraint parent_c1_pk primary key(c1);<br>给c1列增加主键约束</p>
+<p>insert into child values (1,1)<br>ORA-02291: integrity constraint(完整性约束) (HILOO.CHILD_C2_FK) violated - parent key not found (父键值没发现)<br>违反fk约束</p>
+<p>insert into parent values (1);<br>insert into child values (1,1)</p>
+<p>delete from parent where c1 = 1;<br>ORA-02292: integrity constraint (HILOO.CHILD_C2_FK) violated - child record<br>found(子记录被发现)</p>
+<p>delete from child where c2 = 1;<br>delete from parent where c1 = 1;</p>
+<p>drop table parent purge;<br>ORA-02449: unique/primary keys in table referenced by foreign keys<br>在parent table上的pk/uk正在fk所引用</p>
+<p>drop table child purge;<br>drop table parent purge;</p>
+<p>drop table parent cascade constraints purge;<br>cascade constraints 级联约束,child table本身没被删除,只是先把子表上的fk约束删除,再删parent table.</p>
+<p>表级约束<br>create table child<br>(c1 number(2) constraint child_c1_pk<br>              primary key,<br> c2 number(3),<br> constraint child_c2_fk foreign key(c2)<br>            references parent(c1)<br>)</p>
+<p>外键约束另外两种定义方法<br>create table child1<br>(c1 number(2) constraint child1_c1_pk<br>              primary key,<br> c2 number(3) constraint child1_c2_fk<br>              references parent(c1)<br>              on delete cascade)<br>on delete cascade :级联删除会影响到对parent table的删除,先delete from child1,再delete from<br>parent</p>
+<p>delete from parent where c1 = 1;<br>create table child2<br>(c1 number(2) constraint child2_c1_pk<br>              primary key,<br> c2 number(3) constraint child2_c2_fk<br>              references parent(c1)<br>              on delete set null)</p>
+<p>delete from parent where c1 = 1<br>等价于以下操作<br>SQL&gt; update child2 set c2 = null<br>  2  where c2 = 1;<br>SQL&gt; delete from parent where c1 = 1;</p>
+<p>table<br>DDL(数据类型 约束)<br>transaction (包含一堆DML)</p>
+<p>4000<br>100<br>1000<br>3100</p>
+<p>视图(view)<br>create table test_t1<br>as<br>select <em> from test<br>where c1 = 1;<br>create or replace view test_v1<br>as<br>select </em> from test<br>where c1 = 1;<br>desc test_v1<br>selelct * from test_v1</p>
+<p>insert into test values (1,3);<br>select <em> from test_v1 (1,3)<br>insert into test_v1 values (1,4)<br>select </em> from test_v1;<br>select <em> from test;<br>insert into test_v1 values (2,3);<br>select </em> from test_v1;(没有)<br>select * from test;(2,3)</p>
+<p>drop table test purge;<br>select * from test_v1;<br>SQL&gt; desc test_v1<br>ERROR:<br>ORA-24372: invalid object for describe<br>无法描述无效对象的结构</p>
+<p>SQL&gt; select text from user_views<br>  2  where view_name = ‘TEST_V1’;</p>
+<h2 id="TEXT"><a href="#TEXT" class="headerlink" title="TEXT"></a>TEXT</h2><p>select “C1”,”C2” from test<br>where c1 = 1</p>
+<p>view是一条select语句. select语句中包含的表为源表.通过view对源表做DML操作.</p>
+<p>view作用<br>1 create view (deptno = 30)<br>  grant view to user<br>  限定用户查询的数据 子集<br>2 简化查询语句<br>3 create view beijing<br>  as<br>  select <em> from haidian<br>  union all<br>  select </em> from xicheng<br>…<br>  超集<br>view的类型<br>1 简单view (DML)<br>2 复杂view  (不能DML)</p>
+<p>create or replace view avgscore_v<br>select s.name,a.avgscore<br>from student s,<br>     (select sid,round(avg(score)) avgscore<br>      from stu_cour<br>      group by sid) a<br>on s.id = a.sid</p>
+<p>view的约束<br>create or replace view test_ck<br>as<br>select * from test<br>where c1 = 1<br>with check option;<br>c1=2,违反where条件,2,3记录insert时报错</p>
+<p>create or replace view test_ro<br>as<br>select * from test<br>where c1 = 1<br>with read only;<br>只读视图</p>
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>create index test_c1_idx<br>on test(c1);<br>对索引不能做desc,select,DML操作<br>rowid 代表一条记录的物理位置<br>属于哪个数据对象(table)<br>属于哪个数据文件的<br>属于数据文件的第几个数据块<br>属于数据块里的第几条记录</p>
+<h4 id="index的结构"><a href="#index的结构" class="headerlink" title="index的结构"></a>index的结构</h4><p>index记录rowid<br>index的结构是一棵平衡树,有三类数据块组成,根节点,分支节点,叶子节点,数据块的数据是排序的.根节点和分支节点用于导航,里面记录下一级节点的物理位置以及该节点包含的数据范围.叶子节点里记录的是index entry(索引项),由key值和rowid组成,key值是建索引的列在每条记录上的取值,rowid是记录的物理位置,所有的叶子节点做成双向链表(升序/降序),适用于范围查询.<br>用索引查询的路线图,从根节点出发,找相应的分支节点,叶子节点,最后要找到index entry,通过rowid定位<br>表里所需要的数据块,避免了全表扫描.</p>
+<p>索引为什么提高查询效率,为select语句<br>有效地降低了读取数据块的数量.读取数据块,一种从文件里读,物理读 physical read,一种从内存读,逻辑读 logical read /buffer gets</p>
+<p>建索引代价<br>空间,DML变慢</p>
+<h4 id="哪些列适合建索引"><a href="#哪些列适合建索引" class="headerlink" title="哪些列适合建索引"></a>哪些列适合建索引</h4><p>1 经常出现在where子句的列<br>2 pk/uk列<br>3 经常出现在表连接的列<br>4 fk列 parent.pk列 = child.fk列<br>5 经常用于group by,order by的列<br>7 where c1 is null(全表扫描),索引里不记null值,<br> 该列有大量null值,找not null值用索引会快</p>
+<h4 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h4><p>非唯一性索引,提高查询效率<br>唯一性索引,解决唯一性.等价建唯一性约束<br>create unique index test_c2_idx<br>on test(c2);</p>
+<p>insert into test (c2) values (1)<br>*<br>ERROR at line 1:<br>ORA-00001: unique constraint(HILOO.TEST_C2_IDX ) violated</p>
+<p>联合索引<br>create index test_c1_c2_idx<br>on test(c1,c2)<br>where c1 = 1 and c2 = 1</p>
+<p>select ename from emp_hiloo<br>where salary<em>12 &gt; 60000<br>where salary &gt; 5000<br>如果salary建索引,where salary &gt; 5000(用),where salary</em>12 &gt; 60000(不能用)</p>
+<p>where upper(ename) = ‘ZHANGWUJI’</p>
+<p>where c1 = 100 c1是varchar2类型<br>where to_number(c1) = 100</p>
+<p>where ename like ‘a%’<br>where substr(ename,1,1) = ‘a’</p>
+<p>deptno not in (20,30)<br>depotno in (10)</p>
+<h4 id="函数索引"><a href="#函数索引" class="headerlink" title="函数索引"></a>函数索引</h4><p>create index test_c1_funidx<br>on test(round(c1));<br>where round(c1) = 10</p>
+<p>create index student_name_idx<br>on student(name);</p>
+<h4 id="序列号"><a href="#序列号" class="headerlink" title="序列号"></a>序列号</h4><p>sequence<br>为table里的主键服务,产生主键值<br>唯一值产生器<br>sequence_name.nextval</p>
+<p>为student表的id建sequence<br>insert into student(student_id.nextval…<br>为course表的id建sequence<br>insert into course (course_id.nextval…</p>
+<p>创建序列如下：<br>create sequence SEQ_TEST100<br>minvalue 1<br>maxvalue 999999999999999999999999999<br>start with 11<br>increment by 1<br>cache 10;</p>
+<p>函数<br>create or replace function dept_avgsal<br>(p_deptno number) –定义参数,数据类型不能有宽度<br>return number    –定义函数的返回类型<br>is<br>  v_salary emp_hiloo.salary%type;     –变量v_salary 的类型跟表emp_hiloo里的salary的类型定义一致<br>begin<br>  select round(avg(salary)) into v_salary<br>  from emp_hiloo<br>  where deptno = p_deptno;    –select当且仅当返回一条记录用select into语法,表示把select语句的执行结果赋值给v_salary<br>  return v_salary;       –返回函数值<br>end;<br>.不运行,回到SQL&gt;下<br>/表示运行<br>show error<br>SQL&gt; select dept_avgsal(10) from dual;</p>
+<p>练习<br>用语法实现多对多关系<br>student<br>id pk<br>name not null</p>
+<p>course<br>id pk<br>name not null</p>
+<p>stu_cour<br>sid fk –&gt;student(id)<br>cid fk –&gt;course(id)<br>pk(sid,cid)<br>score check <a href="between and">0,100</a> </p>
+<h4 id="数据库日期比较"><a href="#数据库日期比较" class="headerlink" title="数据库日期比较"></a>数据库日期比较</h4><p>Sql代码：<br>1    timesten内存数据库比较日期是不是同一天,低效的方法<br>2    to_char(create_date,’yyyymmdd’)=to_char(sysdate NUMTODSINTERVAL(60<em>60</em>24,’SECOND’),’yyyymmdd’)<br>3    oracle 数据库低效的方法<br>4    to_char(create_date,’yyyymmdd’)=to_char(sysdate-1,’yyyymmdd’)<br>5    2个数据库通用高效的方法<br>6    trunc(create_date)=trunc(sysdate)-NUMTODSINTERVAL(1,’DAY’)<br>查找数据库里的表，索引等<br>支持oracle的模糊查询如select * from user_tables where table_name like ‘%_PROJECT’;查表名以PROJECT结尾的表（注：区别大小写）<br>查所有用户的表在all_tables<br>主键名称、外键在all_constraints<br>索引在all_indexes<br>但主键也会成为索引，所以主键也会在all_indexes里面。<br>具体需要的字段可以DESC下这几个view，dba登陆的话可以把all换成dba。</p>
+<p>查询用户表的索引(非聚集索引):<br>select * from user_indexes<br>where uniqueness = ‘NONUNIQUE’</p>
+<p>查询用户表的主键(聚集索引):<br>select * from user_indexes<br>where uniqueness = ‘UNIQUE’</p>
+<p>1、    查找表的所有索引（包括索引名，类型，构成列）：<br>select t.<em>,i.index_type from user_ind_columns t,user_indexes i where t.index_name = i.index_name and t.table_name = i.table_name and t.table_name = 要查询的表<br>2、查找表的主键（包括名称，构成列）：<br>select cu.</em> from user_cons_columns cu, user_constraints au where cu.constraint_name = au.constraint_name and au.constraint_type = ‘P’ and au.table_name = 要查询的表<br>3、查找表的唯一性约束（包括名称，构成列）：<br>select column_name from user_cons_columns cu, user_constraints au where cu.constraint_name = au.constraint_name and au.constraint_type = ‘U’ and au.table_name = 要查询的表<br>4、查找表的外键（包括名称，引用表的表名和对应的键名，下面是分成多步查询）：<br>select <em> from user_constraints c where c.constraint_type = ‘R’ and c.table_name = 要查询的表<br>查询外键约束的列名：<br>select </em> from user_cons_columns cl where cl.constraint_name = 外键名称<br>查询引用表的键的列名：<br>select <em> from user_cons_columns cl where cl.constraint_name = 外键引用表的键名<br>5、查询表的所有列及其属性<br>select t.</em>,c.COMMENTS from user_tab_columns t,user_col_comments c where t.table_name = c.table_name and t.column_name = c.column_name and t.table_name = 要查询的表</p>
+<p>####数据唯一Id：####</p>
+<ol>
+<li>用Oracle来生成UUID，做法很简单，如下：select sys_guid() from dual;数据类型是 raw(16) 有32个字符。<br>create table test_guid3(<br>id varchar(50)<br>)<br>select * from test_guid3;<br>insert into test_guid3(id) values(sys_guid())</li>
+</ol>
+<hr>
+<pre><code>1000 7CD5B7769DF75CEFE034080020825436
+1100 7CD5B7769DF85CEFE034080020825436
+1200 7CD5B7769DF95CEFE034080020825436
+1300 7CD5B7769DFA5CEFE034080020825436
+</code></pre><h3 id="名词"><a href="#名词" class="headerlink" title="名词"></a>名词</h3><h4 id="Oracle的方案（Schema）和用户（User）的区别"><a href="#Oracle的方案（Schema）和用户（User）的区别" class="headerlink" title="Oracle的方案（Schema）和用户（User）的区别"></a>Oracle的方案（Schema）和用户（User）的区别</h4><p>从定义中我们可以看出方案（Schema）为数据库对象的集合，为了区分各个集合，我们需要给这个集合起个名字，这些名字就是我们在企业管理器的方案下看到的许多类似用户名的节点，这些类似用户名的节点其实就是一个schema，schema里面包含了各种对象如tables, views, sequences, stored procedures, synonyms, indexes, clusters, and database links。</p>
+<p>   一个用户一般对应一个schema,该用户的schema名等于用户名，并作为该用户缺省schema。这也就是我们在企业管理器的方案下看到schema名都为数据库用户名的原因。Oracle数据库中不能新创建一个schema，要想创建一个schema，只能通过创建一个用户的方法解决(Oracle中虽然有create schema语句，但是它并不是用来创建一个schema的)，在创建一个用户的同时为这个用户创建一个与用户名同名的schem并作为该用户的缺省shcema。即schema的个数同user的个数相同，而且schema名字同user名字一一对应并且相同，所有我们可以称schema为user的别名，虽然这样说并不准确，但是更容易理解一些。</p>
+<p>   一个用户有一个缺省的schema，其schema名就等于用户名，当然一个用户还可以使用其他的schema。如果我们访问一个表时，没有指明该表属于哪一个schema中的，系统就会自动给我们在表上加上缺省的sheman名。比如我们在访问数据库时，访问scott用户下的emp表，通过select <em> from emp; 其实，这sql语句的完整写法为select </em> from scott.emp。在数据库中一个对象的完整名称为schema.object，而不属user.object。类似如果我们在创建对象时不指定该对象的schema，在该对象的schema为用户的缺省schema。这就像一个用户有一个缺省的表空间，但是该用户还可以使用其他的表空间，如果我们在创建对象时不指定表空间，则对象存储在缺省表空间中，要想让对象存储在其他表空间中，我们需要在创建对象时指定该对象的表空间。</p>
+<p>   oracle中的schema就是指一个用户下所有对象的集合，schema本身不能理解成一个对象，oracle并没有提供创建schema的语法，schema也并不是在创建user时就创建，而是在该用户下创建第一个对象之后schema也随之产生，只要user下存在对象，schema就一定存在，user下如果不存在对象，schema也不存在；这一点类似于temp tablespace group，另外也可以通过oem来观察，如果创建一个新用户，该用户下如果没有对象则schema不存在，如果创建一个对象则和用户同名的schema也随之产生。</p>
+<p>####Oracle中User与Schema的简单理解####<br>技术积累（126）<br>版权声明：本文为博主原创文章，未经博主允许不得转载。<br>方案（Schema）为数据库对象的集合，为了区分各个集合，我们需要给这个集合起个名字，这些名字就是我们在企业管理器的方案下看到的许多类似用户名的节点，这些类似用户名的节点其实就是一个schema，schema里面包含了各种对象如tables, views, sequences, stored procedures, synonyms, indexes, clusters, and database links。  一个用户一般对应一个schema,该用户的schema名等于用户名，并作为该用户缺省schema。<br>SQL Server中的Schema<br>SQL Server中一个用户有一个缺省的schema，其schema名就等于用户名，这也就是我们在企业管理器的方案下看到schema名都为数据库用户名的原因。当然一个用户还可以使用其他的schema。如果我们访问一个表时，没有指明该表属于哪一个schema中的，系统就会自动给我们在表上加上缺省的sheman名。比如我们在访问数据库时，访问scott用户下的emp表，通过select <em> from emp; 其实，这sql语句的完整写法为select </em> from scott.emp。在数据库中一个对象的完整名称为schema.object，而不属user.object。类似如果我们在创建对象时不指定该对象的schema，在该对象的schema为用户的缺省schema。这就像一个用户有一个缺省的表空间，但是该用户还可以使用其他的表空间，如果我们在创建对象时不指定表空间，则对象存储在缺省表空间中，要想让对象存储在其他表空间中，我们需要在创建对象时指定该对象的表空间。</p>
+<p>Oracle中的Schema<br>Oracle中的schema就是指一个用户下所有对象的集合，schema本身不能理解成一个对象，oracle并没有提供创建schema的语法，schema也并不是在创建user时就创建，而是在该用户下创建第一个对象之后schema也随之产生，只要user下存在对象，schema就一定存在，user下如果不存在对象，schema也不存在；如果创建一个新用户，该用户下如果没有对象则schema不存在，如果创建一个对象则和用户同名的schema也随之产生。实际上在使用上，shcema与user完全一样，没有什么区别，在出现schema名的地方也可以出现user名。</p>
+<p>Tablspace<br>逻辑上用来放objects,，这是个逻辑概念，本质上是一个或者多个数据文件的集合，物理上对应磁盘上的数据文件或者裸设备。</p>
+<p>数据文件<br>具体存储数据的物理文件，是一个物理概念。一个数据文件只能属于一个表空间，一个表空间可以包含一个或多个数据文件。一个数据库由多个表空间组成，一个表空间只能属于一个数据库。</p>
+<p>下边是源自网络的一个形象的比喻<br>我们可以把Database看作是一个大仓库，仓库分了很多很多的房间，Schema就是其中的房间，一个Schema代表一个房间，Table可以看作是每个Schema中的床，Table（床）被放入每个房间中，不能放置在房间之外，那岂不是晚上睡觉无家可归了，然后床上可以放置很多物品，就好比 Table上可以放置很多列和行一样，数据库中存储数据的基本单元是Table，现实中每个仓库放置物品的基本单位就是床， User就是每个Schema的主人，（所以Schema包含的是Object，而不是User），user和schema是一一对应的，每个user在没有特别指定下只能使用自己schema（房间）的东西，如果一个user想使用其他schema（房间）的东西，那就要看那个schema（房间）的user（主人）有没有给你这个权限了，或者看这个仓库的老大（DBA）有没有给你这个权限了。换句话说，如果你是某个仓库的主人，那么这个仓库的使用权和仓库中的所有东西都是你的（包括房间），你有完全的操作权，可以扔掉不用的东西从每个房间，也可以放置一些有用的东西到某一个房间，你还可以给每个User分配具体的权限，也就是他到某一个房间能做些什么，是只能看（Read-Only），还是可以像主人一样有所有的控制权（R/W），这个就要看这个User所对应的角色Role了。</p>
+<h4 id="oracle的schema的含义"><a href="#oracle的schema的含义" class="headerlink" title="oracle的schema的含义"></a>oracle的schema的含义</h4><p>在现在做的Kraft Catalyst 项目中，Cransoft其中有一个功能就是schema refresh. 一直不理解schema什么意思，也曾经和同事讨论过，当时同事就给我举过一个例子，下面会详细说的。其实schema是Oracle中的，其他数据库中不知道有没有这个概念。<br>首先,可以先看一下schema和user的定义：<br>A schema is a collection of database objects (used by a user).<br>Schema objects are the logical structures that directly refer to the database’s data.<br>A user is a name defined in the database that can connect to and access objects.<br>Schemas and users help database administrators manage database security.<br>从中我们可以看出,schema为数据库对象的集合，为了区分各个集合，需要给这个集合起个名字，这些名字就是在企业管理器的方案下看到的许多类似用户名的节点，这些类似用户名的节点其实就是一个schema。<br>schema里面包含了各种对象如tables, views, sequences, stored procedures, synonyms, indexes, clusters, and database links。<br>一个用户一般对应一个schema，该用户的schema名等于用户名，并作为该用户缺省schema。这也就是在企业管理器的方案下看到schema名都为数据库用户名的原因。<br>Oracle数据库中不能新创建一个schema，要想创建一个schema，只能通过创建一个用户的方法解决(Oracle中虽然有create schema语句，但是它并不是用来创建一个schema的)。在创建一个用户的同时，为这个用户创建一个与用户名同名的schem并作为该用户的缺省 shcema。即schema的个数同user的个数相同，而且schema名字同user名字一一 对应并且相同，所有我们可以称schema为user的别名，虽然这样说并不准确，但是更容易理解一些。<br>一个用户有一个缺省的schema，其schema名就等于用户名，当然一个用户还可以使用其他的schema。如果我们访问一个表时，没有指明该表属于 哪一个schema中的，系统就会自动给我们在表上加上缺省的sheman名。比如我们在访问数据库时，访问scott用户下的emp表，通过 select <em> from emp; 其实，这sql语句的完整写法为select </em> from scott.emp。在数据库中一个对象的完整名称为schema.object，而不属user.object。类似如果我们在创建对象时不指定该对象 的schema，在该对象的schema为用户的缺省schema。这就像一个用户有一个缺省的表空间，但是该用户还可以使用其他的表空间，如果我们在创 建对象时不指定表空间，则对象存储在缺省表空间中，要想让对象存储在其他表空间中，需要在创建对象时指定该对象的表空间。<br>有人举了个很生动的例子，来说明Database、User、Schema、Tables、Col、Row等之间的关系<br>“可以把Database看作是一个大仓库，仓库分了很多很多的房间，Schema就是其中的房间，一个Schema代表一个房间，Table可以看作是每个Schema中的床，Table（床）就被放入每个房间中，不能放置在房间之外，那岂不是晚上睡觉无家可归了。<br>然后床上可以放置很多物品，就好比Table上可以放置很多列和行一样，数据库中存储数据的基本单元是Table，现实中每个仓库放置物品的基本单位就是床， User就是每个Schema的主人（所以Schema包含的是Object，而不是User）。<br>其实User是对应与数据库的（即User是每个对应数据库的主人），既然有操作数据库（仓库）的权利，就肯定有操作数据库中每个Schema（房间）的 权利，就是说每个数据库映射的User有每个Schema（房间）的钥匙，换句话说，如果他是某个仓库的主人，那么这个仓库的使用权和仓库中的所有东西都 是他的（包括房间），他有完全的操作权，可以扔掉不用的东西从每个房间，也可以放置一些有用的东西到某一个房间。还可以给User分配具体的权限，也就是 他到某一个房间能做些什么，是只能看（Read-Only），还是可以像主人一样有所有的控制权（R/W），这个就要看这个User所对应的角色Role 了”<br>从定义中我们可以看出schema为数据库对象的集合，为了区分各个集合，我们需要给这个集合起个名字，这些名字就是我们在企业管理器的方案下看到的许多类似用户名的节点，这些类似用户名的节点其实就是一个schema，schema里面包含了各种对象如tables, views, sequences, stored procedures, synonyms, indexes, clusters, and database links。<br>一个用户一般对应一个schema,该用户的schema名等于用户名，并作为该用户缺省schema。这也就是我们在企业管理器的方案下看到schema名都为数据库用户名的原因。Oracle数据库中不能新创建一个schema，要想创建一个schema，只能通过创建一个用户的方法解决(Oracle中虽然有create schema语句，但是它并不是用来创建一个schema的)，在创建一个用户的同时为这个用户创建一个与用户名同名的schem并作为该用户的缺省shcema。即schema的个数同user的个数相同，而且schema名字同user名字一一 对应并且相同，所有我们可以称schema为user的别名，虽然这样说并不准确，但是更容易理解一些。<br>一个用户有一个缺省的schema，其schema名就等于用户名，当然一个用户还可以使用其他的schema。如果我们访问一个表时，没有指明该表属于哪一个schema中的，系统就会自动给我们在表上加上缺省的sheman名。比如我们在访问数据库时，访问scott用户下的emp表，通过select <em> from emp; 其实，这sql语句的完整写法为select </em> from scott.emp。在数据库中一个对象的完整名称为schema.object，而不属user.object。类似如果我们在创建对象时不指定该对象的schema，在该对象的schema为用户的缺省schema。这就像一个用户有一个缺省的表空间，但是该用户还可以使用其他的表空间，如果我们在创建对象时不指定表空间，则对象存储在缺省表空间中，要想让对象存储在其他表空间中，我们需要在创建对象时指定该对象的表空间。<br>咳，说了这么多，给大家举个例子，否则，一切枯燥无味！<br>SQL&gt; Gruant dba to scott<br>SQL&gt; create table test(name char(10));<br>Table created.<br>SQL&gt; create table system.test(name char(10));<br>Table created.<br>SQL&gt; insert into test values(‘scott’);<br>1 row created.<br>SQL&gt; insert into system.test values(‘system’);<br>1 row created.<br>SQL&gt; commit;<br>Commit complete.<br>SQL&gt; conn system/manager<br>Connected.<br>SQL&gt; select * from test;</p>
+<h2 id="NAME"><a href="#NAME" class="headerlink" title="NAME"></a>NAME</h2><p>system<br>SQL&gt; ALTER SESSION SET CURRENT_SCHEMA = scott; –改变用户缺省schema名<br>Session altered.<br>SQL&gt; select * from test;</p>
+<h2 id="NAME-1"><a href="#NAME-1" class="headerlink" title="NAME"></a>NAME</h2><p>scott<br>SQL&gt; select owner ,table_name from dba_tables where table_name=upper(‘test’);<br>OWNER TABLE_NAME</p>
+<hr>
+<p>SCOTT TEST<br>SYSTEM TEST<br>–上面这个查询就是我说将schema作为user的别名的依据。实际上在使用上，shcema与user完全一样，没有什么区别，在出现schema名的地方也可以出现user名。<br>表空间：<br>一个表空间就是一片磁盘区域,他又一个或者多个磁盘文件组成,一个表空间可以容纳许多表、索引或者簇等<br>  每个表空间又一个预制的打一磁盘区域称为初始区间（initial   extent）用完这个区间厚在用下一个，知道用完表空间，这时候需要对表空间进行扩展，增加数据文件或者扩大已经存在的数据文件</p>
+<p>instance是一大坨内存sga,pga….和后台的进程smon pmon…..组成的一个大的应用。<br>schema就是一个用户和他下面的所有对象。。<br>tablspace 逻辑上用来放objects.物理上对应磁盘上的数据文件或者裸设备。<br> 在Oracle中，结合逻辑存储与物理存储的概念，我们可以这样来理解数据库、表空间、SCHEMA、数据文件这些概念：<br>      数据库是一个大圈，里面圈着的是表空间，表空间里面是数据文件，那么schema是什么呢？schema是一个逻辑概念，是一个集合，但schema并不是一个对象，oracle也并没有提供创建schema的语法。<br>schema：<br>      一般而言，一个用户就对应一个schema,该用户的schema名等于用户名，并作为该用户缺省schema，用户是不能创建schema的，schema在创建用户的时候创建，并可以指定用户的各种表空间（这点与PostgreSQL是不同，PostgreSQL是可以创建schema并指派给某个用户）。当前连接到数据库上的用户创建的所有数据库对象默认都属于这个schema（即在不指明schema的情况下），比如若用户scott连接到数据库，然后create table test(id int not null)创建表，那么这个表被创建在了scott这个schema中；但若这样create kanon.table test(id int not null)的话，这个表被创建在了kanon这个schema中，当然前提是权限允许。<br>      创建用户的方法是这样的：<br>      create user 用户名 identified by 密码<br>      default tablespace 表空间名<br>      temporary tablespace 表空间名<br>      quota 限额  （建议创建的时候指明表空间名）<br>由此来看，schema是一个逻辑概念。<br>      但一定要注意一点：schema好像并不是在创建user时就创建的，而是在该用户创建了第一个对象之后才将schema真正创建的，只有user下存在对象，他对应的schema才会存在，如果user下不存在任何对象了，schema也就不存在了；</p>
+<p>数据库：<br>     在oracle中，数据库是由表空间来组成的，而表空间里面是具体的物理文件—数据文件。我们可以创建数据库并为其指定各种表空间。</p>
+<p>表空间：<br>     这是个逻辑概念，本质上是一个或者多个数据文件的集合。</p>
+<p>数据文件：<br>     具体存储数据的物理文件，是一个物理概念。<br>     一个数据文件只能属于一个表空间，一个表空间可以包含一个或多个数据文件。一个数据库由多个表空间组成，一个表空间只能属于一个数据库。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/oracle/" rel="tag"># oracle</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/21/oracle/RAW类型/" rel="next" title="消息传送基础">
+                <i class="fa fa-chevron-left"></i> 消息传送基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/22/kettle/Sorted Merge组件/" rel="prev" title="Sorted Merge组件">
+                Sorted Merge组件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Oracle-SQL基本知识"><span class="nav-number">1.</span> <span class="nav-text">Oracle SQL基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装数据库"><span class="nav-number">1.1.</span> <span class="nav-text">安装数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）安装Oracle常用问题-常用”用户名-密码“规则-："><span class="nav-number">1.1.1.</span> <span class="nav-text">1）安装Oracle常用问题(常用”用户名/密码“规则)：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）SQL-DDL…"><span class="nav-number">1.1.2.</span> <span class="nav-text">2）SQL,DDL…</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）RDBMS关系型数据库管理系统"><span class="nav-number">1.1.3.</span> <span class="nav-text">3）RDBMS关系型数据库管理系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4）-登录该机器上的数据库系统"><span class="nav-number">1.1.4.</span> <span class="nav-text">4） 登录该机器上的数据库系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5）登录的是哪个数据库"><span class="nav-number">1.1.5.</span> <span class="nav-text">5）登录的是哪个数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据表信息："><span class="nav-number">1.1.5.1.</span> <span class="nav-text">数据表信息：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1）null值的理解"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">1）null值的理解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2）各个子句的功能"><span class="nav-number">1.1.5.3.</span> <span class="nav-text">2）各个子句的功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3）课堂练习"><span class="nav-number">1.1.5.4.</span> <span class="nav-text">3）课堂练习</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#更改字段名字-mysql、orcle-："><span class="nav-number">1.1.5.5.</span> <span class="nav-text">更改字段名字(mysql、orcle)：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1）字符函数-upper-lower"><span class="nav-number">1.1.5.6.</span> <span class="nav-text">1）字符函数:upper,lower</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2）数值函数"><span class="nav-number">1.1.5.7.</span> <span class="nav-text">2）数值函数:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-日期和日期函数"><span class="nav-number">1.1.5.8.</span> <span class="nav-text">3) 日期和日期函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-转换函数"><span class="nav-number">1.1.5.9.</span> <span class="nav-text">4) 转换函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其他函数"><span class="nav-number">1.1.5.10.</span> <span class="nav-text">其他函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-多行函数-哪两个函数里只能放number"><span class="nav-number">1.1.6.</span> <span class="nav-text">2) 多行函数(哪两个函数里只能放number)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-group-by子句"><span class="nav-number">1.1.7.</span> <span class="nav-text">3) group by子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#having子句"><span class="nav-number">1.1.8.</span> <span class="nav-text">having子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GROUP-BY-语句"><span class="nav-number">1.1.9.</span> <span class="nav-text">GROUP BY 语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-where和having比较"><span class="nav-number">1.1.10.</span> <span class="nav-text">4) where和having比较</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HAVING-子句"><span class="nav-number">1.1.10.1.</span> <span class="nav-text">HAVING 子句</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-DCL"><span class="nav-number">1.1.11.</span> <span class="nav-text">5) DCL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-关于null值的讨论"><span class="nav-number">1.1.12.</span> <span class="nav-text">6) 关于null值的讨论</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5十分钟之后"><span class="nav-number">1.1.13.</span> <span class="nav-text">5十分钟之后</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">1.2.</span> <span class="nav-text">查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#子查询"><span class="nav-number">1.2.1.</span> <span class="nav-text">子查询</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#子查询执行"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">子查询执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#非关联子查询的分类"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">非关联子查询的分类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据类型"><span class="nav-number">1.3.</span> <span class="nav-text">数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TEXT"><span class="nav-number">2.</span> <span class="nav-text">TEXT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引"><span class="nav-number">2.0.1.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index的结构"><span class="nav-number">2.0.2.</span> <span class="nav-text">index的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#哪些列适合建索引"><span class="nav-number">2.0.3.</span> <span class="nav-text">哪些列适合建索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引类型"><span class="nav-number">2.0.4.</span> <span class="nav-text">索引类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数索引"><span class="nav-number">2.0.5.</span> <span class="nav-text">函数索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#序列号"><span class="nav-number">2.0.6.</span> <span class="nav-text">序列号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库日期比较"><span class="nav-number">2.0.7.</span> <span class="nav-text">数据库日期比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#名词"><span class="nav-number">2.1.</span> <span class="nav-text">名词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Oracle的方案（Schema）和用户（User）的区别"><span class="nav-number">2.1.1.</span> <span class="nav-text">Oracle的方案（Schema）和用户（User）的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#oracle的schema的含义"><span class="nav-number">2.1.2.</span> <span class="nav-text">oracle的schema的含义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAME"><span class="nav-number">3.</span> <span class="nav-text">NAME</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAME-1"><span class="nav-number">4.</span> <span class="nav-text">NAME</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

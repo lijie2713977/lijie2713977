@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="#开源ETL工具-kettle说明：本文部分内容参考网络的资料，如果侵权之处请告知一下，不胜感激！ Kettle是Pentaho公司开发的一款ETL产品，以工作流为核心，强调面向解决方案而非工具的，基于java平台的商业智能(Business Intelligence,BI)套件。Kettle的开源协议是LGPL，该协议来自GNU，因功能强大，被FSF(Free Software Foundati">
+<meta name="keywords" content="开源项目,kettle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开源ETL工具-kettle">
+<meta property="og:url" content="http://cenrise.com/2017/04/15/kettle/开源ETL工具-kettle/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="#开源ETL工具-kettle说明：本文部分内容参考网络的资料，如果侵权之处请告知一下，不胜感激！ Kettle是Pentaho公司开发的一款ETL产品，以工作流为核心，强调面向解决方案而非工具的，基于java平台的商业智能(Business Intelligence,BI)套件。Kettle的开源协议是LGPL，该协议来自GNU，因功能强大，被FSF(Free Software Foundati">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-08-18T01:44:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="开源ETL工具-kettle">
+<meta name="twitter:description" content="#开源ETL工具-kettle说明：本文部分内容参考网络的资料，如果侵权之处请告知一下，不胜感激！ Kettle是Pentaho公司开发的一款ETL产品，以工作流为核心，强调面向解决方案而非工具的，基于java平台的商业智能(Business Intelligence,BI)套件。Kettle的开源协议是LGPL，该协议来自GNU，因功能强大，被FSF(Free Software Foundati">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2017/04/15/kettle/开源ETL工具-kettle/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>开源ETL工具-kettle | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2017/04/15/kettle/开源ETL工具-kettle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">开源ETL工具-kettle
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-04-15 14:43:49" itemprop="dateCreated datePublished" datetime="2017-04-15T14:43:49+08:00">2017-04-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-08-18 09:44:35" itemprop="dateModified" datetime="2017-08-18T09:44:35+08:00">2017-08-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/开源项目/kettle/" itemprop="url" rel="index"><span itemprop="name">kettle</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#开源ETL工具-kettle<br>说明：本文部分内容参考网络的资料，如果侵权之处请告知一下，不胜感激！</p>
+<p>Kettle是Pentaho公司开发的一款ETL产品，以工作流为核心，强调面向解决方案而非工具的，基于java平台的商业智能(Business Intelligence,BI)套件。Kettle的开源协议是LGPL，该协议来自GNU，因功能强大，被FSF(Free Software Foundation)列为首选协议。LGPL协议允许Kettle作为商业（非开源）代码的链接库，使用Kettle的商业代码无须开源。LGPL带来的不仅是Kettle API，你还可以对它进行拓展对外提供商业软件或服务。</p>
+<h2 id="ETL是什么"><a href="#ETL是什么" class="headerlink" title="##ETL是什么"></a>##ETL是什么</h2><p>ETL早期作为数据仓库的关键环节，负责将分布的、异构数据源中的数据如关系数据、平面数据文件等抽取到临时中间层后进行清洗、转换、集成，最后加载到数据仓库（Data Warehouse）或数据集市（Data Mart）中，成为联机分析处理（On-Line Analytical Processing，OLAP）、数据挖掘（Data Mining）的基础。</p>
+<p>Exract：从多种异构数据源中抽取数据</p>
+<p>Transform：经过清洗，统一化和转换</p>
+<p>Load：将数据加载到目的数据源中</p>
+<h2 id="Kettle产品特点"><a href="#Kettle产品特点" class="headerlink" title="##Kettle产品特点"></a>##Kettle产品特点</h2><p>适用于将多个应用系统的大批量的、异构的数据进行整合，有强大的数据转换功能。<br>高效适配多种类型的异构数据库、文件和应用系统。<br>快速构建复杂数据大集中应用、无需编码。</p>
+<p>Kettle构成</p>
+<p>TODO以Github上的名词进行定义Spoon，Cart等</p>
+<p>左边是集成开发工具（Spoon），可以进行流程的开发、配置、调试、部署、执行(转换、任务)，也可以对运行情况进行监控、对处理过程的日志进行查看、也可以通过接口调用方式进行远程管理。</p>
+<p>中间是服务器(Carte)，包括实际执行转换和任务的ETL引擎、监控管理的接口、认证授权接口，还有一个可以拓展的接口。</p>
+<p>下面是在开发过程中，用于保存集成开发工具中创建的转换、任务、数据库等项的，资源库包含两类，一个是数据库资源库，一个是文件资源库。</p>
+<p>右边个是是第三方平台，可以基于kettle提供的接口实现相应的功能包括状态监控、启停控制、日志查看等功能。</p>
+<p>组成部分<br>名称<br>描述<br>Spoon<br>一个基于swt开发的流式处理客户端，用户开发转换、任务、创建数据库、集群、分区等<br>Pan<br>一个独立的命令行程序，支持通过命令行实现界面的功能，如果转换启停、任务启停。状态查看等<br>Kitchen<br>一个独立的命令行程序，用于执行由Spoon编辑的作业。<br>Carte<br>Carte是一个轻量级的Web容器，用于建立专用、远程的ETL Server。</p>
+<p>PDI相关术语和概念<br>Job(任务)、Transformation(转换)是kettle的两个最重要的概念。任务做的一件完整的事，包含开始、结束等整个生命周期；而转换是要做这件事的某一个小的功能。比如你要从A数据源中解析数据后放入B数据源，那么你可以创建两个转换，一个是从A数据源加载数据-&gt;处理数据-&gt;放入存储中；另一个是把数据放入B数据源，然后在一个任务中处理他们。</p>
+<p>下面我们通过集成开发工具去了解一个转换和任务</p>
+<p>Transformation（转换）<br>Transformation（转换)是由step(步骤)和hops(节点连接线)组成，一个转换，可以看成一段数据流，每一个步骤完成一项数据处理的工作，节点连接线用于数据的流动。</p>
+<p>转换可以单独运行完成某一项工作，文件的扩展名为.ktr</p>
+<p>Steps（步骤）<br>Steps（步骤）是转换的重要组件部分，在Spoon中步骤根据功能分为输入类、输出类、脚本类等，每一个步骤完成一种特定的功能，比如excel输出组件，用于把数据流输出为excel文件格式。参考如下：</p>
+<p>Hops（节点连接）<br>Hops（节点连接）是数据传输的通道，用于连接两个步骤，使数据从一个步骤传递到另一个步骤，支持分发、复制等方式。注意数据处理的顺序并不是按照节点连接箭头的顺序，因为第个步骤都是单独的线程。</p>
+<p>Jobs（工作）<br>Jobs（工作）是基于工作流模型的，顺序处理。把步骤、转换组织在一起完成一件完整的事情。<br>文件扩展名为.kjb</p>
+<p>下载使用<br>kettle下载 目前最新版7.0<br><a href="https://sourceforge.net/projects/pentaho/files/Data%20Integration/" target="_blank" rel="noopener">https://sourceforge.net/projects/pentaho/files/Data%20Integration/</a></p>
+<p>下载解压后是一个如：pdi-ce-7.0.0.0-25的文件，目录内容如下</p>
+<p>windown下直接双拼Spoon.bat、linux下直接运行./spoon.sh即可。<br>注： could not find the main class:org.pentaho.commons.launcher.Launcher. Program will exit. 表示jdk版本错误 。7.0版本只支持jdk1.8，可以单独配置kettle的jdk，添加配置到系统中即可：<br>名称：PENTAHO_JAVA_HOME<br>值：C:\Program Files\Java\jdk1.8.0_45<br>    mac系统下/Library/Java/JavaVirtualMachines/jdk1.8.0_111.jdk/Contents/Home/<br>启动后界面如下</p>
+<p>新建转换：快捷键Ctrl+N</p>
+<p>首先从核心对象区选择“生成记录组件，编辑：</p>
+<p>然后选择Excel输出组件到工作区，创建生成记录步骤到Excel输出步骤的连接线，编辑excel输出目录和字段</p>
+<p>最后生成如下，点击运行：</p>
+<p>运行后的结果是输出excel文件，并可以查看每个步骤的处理情况，读、写、输入、输出等</p>
+<p>其它参考链接<br>kettle源码下载，可以选择各个版本下载，自己编译。<br><a href="https://github.com/pentaho/pentaho-kettle" target="_blank" rel="noopener">https://github.com/pentaho/pentaho-kettle</a><br>大数据插件源码<br><a href="https://github.com/pentaho/big-data-plugin" target="_blank" rel="noopener">https://github.com/pentaho/big-data-plugin</a><br>kettle支持的大数据环境源码，主要是hdp,cdh。<br><a href="https://github.com/pentaho/pentaho-hadoop-shims" target="_blank" rel="noopener">https://github.com/pentaho/pentaho-hadoop-shims</a><br>kettle nexus<br><a href="http://repo.pentaho.org/content/groups/omni/pentaho/" target="_blank" rel="noopener">http://repo.pentaho.org/content/groups/omni/pentaho/</a><br><a href="http://repository.pentaho.org/artifactory/repo/" target="_blank" rel="noopener">http://repository.pentaho.org/artifactory/repo/</a><br>所有组件实现说明<br><a href="http://wiki.pentaho.com/display/EAI/Pentaho+Data+Integration+Steps" target="_blank" rel="noopener">http://wiki.pentaho.com/display/EAI/Pentaho+Data+Integration+Steps</a><br>所有组件测试说明<br><a href="http://wiki.pentaho.com/display/EAI/test" target="_blank" rel="noopener">http://wiki.pentaho.com/display/EAI/test</a><br>帮助<br><a href="http://help.pentaho.com/Documentation" target="_blank" rel="noopener">http://help.pentaho.com/Documentation</a> </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/开源项目/" rel="tag"># 开源项目</a>
+          
+            <a href="/tags/kettle/" rel="tag"># kettle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/01/oracle/Oracle网络和数据库连接/" rel="next" title="Oracle网络和数据库连接">
+                <i class="fa fa-chevron-left"></i> Oracle网络和数据库连接
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/15/kettle/Kettle插件架构/" rel="prev" title="Kettle插件架构">
+                Kettle插件架构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ETL是什么"><span class="nav-number">1.</span> <span class="nav-text">##ETL是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kettle产品特点"><span class="nav-number">2.</span> <span class="nav-text">##Kettle产品特点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

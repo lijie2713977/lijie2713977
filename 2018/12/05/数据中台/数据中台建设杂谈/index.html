@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="现状公司属于是互联网金融行业，但因为只是中小型企业，技术积累较少，数据部门也是16年未开始组建的。最初只是一个提数小组，为业务部门提供他们需要的数据，直到上层领导有意走数据驱动业务的方式，才创建了数据部，也可能只是为了赶时髦，毕境17年，各种GB、TB已经满天飞。 于是领导就带领着大家搞起了大数据，创建了最初的仓库平台、搭建了报表平台、可视化平台，对业务提供支撑。几乎没有相关技术储备，可以说从０到">
+<meta name="keywords" content="模型设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据中台建设杂谈">
+<meta property="og:url" content="http://cenrise.com/2018/12/05/数据中台/数据中台建设杂谈/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="现状公司属于是互联网金融行业，但因为只是中小型企业，技术积累较少，数据部门也是16年未开始组建的。最初只是一个提数小组，为业务部门提供他们需要的数据，直到上层领导有意走数据驱动业务的方式，才创建了数据部，也可能只是为了赶时髦，毕境17年，各种GB、TB已经满天飞。 于是领导就带领着大家搞起了大数据，创建了最初的仓库平台、搭建了报表平台、可视化平台，对业务提供支撑。几乎没有相关技术储备，可以说从０到">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://cenrise.com/images/数据中台/现有的数据仓库架构.jpg">
+<meta property="og:image" content="http://cenrise.com/images/数据中台/标准数据中台构架.jpg">
+<meta property="og:image" content="http://cenrise.com/images/数据中台/理想的仓库.jpg">
+<meta property="og:updated_time" content="2019-03-14T02:50:50.663Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据中台建设杂谈">
+<meta name="twitter:description" content="现状公司属于是互联网金融行业，但因为只是中小型企业，技术积累较少，数据部门也是16年未开始组建的。最初只是一个提数小组，为业务部门提供他们需要的数据，直到上层领导有意走数据驱动业务的方式，才创建了数据部，也可能只是为了赶时髦，毕境17年，各种GB、TB已经满天飞。 于是领导就带领着大家搞起了大数据，创建了最初的仓库平台、搭建了报表平台、可视化平台，对业务提供支撑。几乎没有相关技术储备，可以说从０到">
+<meta name="twitter:image" content="http://cenrise.com/images/数据中台/现有的数据仓库架构.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2018/12/05/数据中台/数据中台建设杂谈/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据中台建设杂谈 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2018/12/05/数据中台/数据中台建设杂谈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据中台建设杂谈
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-05 09:55:00" itemprop="dateCreated datePublished" datetime="2018-12-05T09:55:00+08:00">2018-12-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-14 10:50:50" itemprop="dateModified" datetime="2019-03-14T10:50:50+08:00">2019-03-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据中台/" itemprop="url" rel="index"><span itemprop="name">数据中台</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>现状<br>公司属于是互联网金融行业，但因为只是中小型企业，技术积累较少，数据部门也是16年未开始组建的。最初只是一个提数小组，为业务部门提供他们需要的数据，直到上层领导有意走数据驱动业务的方式，才创建了数据部，也可能只是为了赶时髦，毕境17年，各种GB、TB已经满天飞。</p>
+<p>于是领导就带领着大家搞起了大数据，创建了最初的仓库平台、搭建了报表平台、可视化平台，对业务提供支撑。几乎没有相关技术储备，可以说从０到１，轰轰烈烈，加班加点搞了几个月，初见成效。在做大数据平台的同时，也引入了一些数据应用产品，比如多维分析的saiku，BI工具SuperSet，用于提供报表和提数需求；并且也开发了自己的数据管理平台、统一调度中心，可以小有成就。</p>
+<p>18年年初（3月初左右）公司上层决策创建金融事业中心并单独运营，部门负责人被抽离到金融，并带走部分核心人员，再加上离职人员，技术所剩无几，导致后续大数据平台停步不前，没有什么新的产品开发，日常工作即停留在对原有系统的使用上，应对越来越多的提数需求和个性化的业务定制需求，响应乏力。同事们也有心改造，但无奈人员缺乏，技术储备不足等原因，未能见成效。</p>
+<p>当然，近1年多的时间同事们也没有闲着，在完成工作的时事，尝试了一些大数据应用的技术和方案，算是做了些相关技能的存储。</p>
+<h3 id="设想"><a href="#设想" class="headerlink" title="设想"></a>设想</h3><p>2018Q4研发中心架构调整，欲建立去中心化的开发平台，即各业务部门各自管理自己的应用和数据，同时同步到数据中台。各业务部门对其它部门的数据需求，统一走数据中台。所以数据部又一次走到了风口，面临压力，着手改造。</p>
+<p>现有的数据仓库架构<br>如下图所示，按照业内标准的数据架构，数据采集层、数据计算层、数据服务层、数据应用层进行描述。<br><img src="/images/数据中台/现有的数据仓库架构.jpg" alt="&quot;现有的数据仓库架构&quot;"></p>
+<p>首先是从各业务部门数据库，通过OGG、Sqoop、DataX、Kettle等工具同步定时同步数据到数据中心存储系统上，包括大数据平台HDFS、关系型数据库。然后提供几种查询平台，如kylin、hive、oracle等，进行数据获取，如通过Kylin建模的方式，离线预处理T-1的离线数据；通过oracle数据库，提数人员写SQL查询等，得到想要的数据，目前只支持离线数据。数据同步完成对，外的的数据服务，目前提供了手工提数工单、数据网关接口、帆软BI报表、帆软可视化等方式对业务部门提供查询。</p>
+<h3 id="标准数据中台构架"><a href="#标准数据中台构架" class="headerlink" title="标准数据中台构架"></a>标准数据中台构架</h3><p>如下图所示<br><img src="/images/数据中台/标准数据中台构架.jpg" alt="&quot;标准数据中台构架&quot;"></p>
+<p>通用的数据中台架构，即从数据同步-&gt;模型抽象-&gt;对外应用进行划分，其中操作层作了些同步、清洗、日志采集等收集数据的事情；公共维度对业务数据进行建模，划分度量、维度等对数据进行建模，当然也可以采用其它建模方式；应用数据层是对创建好的数据对外提供服务的方式，包含传输数据的渠道、展示数据的方式等。</p>
+<p>从我们现有的架构的数据仓库架构来看，最初也是按照这个架构进行设计的。但从具体的实现去分析实则存在很多的问题，及需要改进的地方。下面对现有架构的问题进行一下分析。</p>
+<p>存在的问题<br>当前系统架构，对于技术的应用边界、所选技术的性能等问题没有明确的说明。大致列举如下：</p>
+<ol>
+<li>数据同步就有OGG、DataX、Sqoop、Kettle，到你在什么情况下使用OGG比较好，在什么情况下应该使用DataX等问题没有明确界线；另外是否需要这么多同步技术支撑，还是说选择1个主流技术和一个补偿机制即可。</li>
+</ol>
+<p>现在的大数据平台，只是搭建完成，功能只使用了基础的hdfs／hive，对于其它的技术没用实践；</p>
+<ol start="2">
+<li><p>数据同步离线可以多种方式实现，目前实时同步使用的是OGG数据同步。OGG同步是公司DBA进行管理，这方面的责任是否清晰，如果出问题，他们是否能积极支援。</p>
+</li>
+<li><p>公共维度模型层目前是使用kylin做离线OLAP计算，内部采用维度建模思想，这些建模示例能否单独抽象出来，应用在其它的查询或提数方式，更有利于扩展。</p>
+</li>
+</ol>
+<p>4.计算引擎单一，目前只有hive方式查询，对于近实时的要求高的应用就不能满足了。应该提供批和流同步支持的查询，针对不同的情况，选择不同的查询引擎。</p>
+<p>5.同步与查询模块，能否经受得住后期全业务部门的数据查询需求和高并发、大数据量的考验。需要做哪些改进。</p>
+<p>我们能改进的点</p>
+<ol>
+<li><p>应该针对不同的查询需求，提供不同的数据服务出口。比如规范性强的直接走数据网关；定制化要求高的可以走报表；个性化的数据可以走提数工单，定义好边界。</p>
+</li>
+<li><p>提供批和流两种查询支持。计算是仓库的大脑，如果速度慢，完全影响体验及数据的反馈。</p>
+</li>
+<li><p>数据建模。应该统一数据建模，建议规范定义和整理，用于数据提取或自助提数。也可减少与业务人员的理解分歧。</p>
+</li>
+</ol>
+<h3 id="理想的仓库"><a href="#理想的仓库" class="headerlink" title="理想的仓库"></a>理想的仓库</h3><p>如图所示。<br><img src="/images/数据中台/理想的仓库.jpg" alt="&quot;理想的仓库&quot;"></p>
+<p>提供批流两种计算方式、对外针对不同的需求，提供不同的对外数据输出。优化建模，改进同步，增加消息同步补偿。</p>
+<p>最后<br>个人见解，很多不足，后期再变更吧。另外理想很丰满，现实很骨感，4季度结束再回头看吧。</p>
+<p>参考<br>阿里巴巴《大数据之路》</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模型设计/" rel="tag"># 模型设计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/09/tools/通过Hexo找寻自己的Github Pages/" rel="next" title="通过Hexo找寻自己的Github Pages">
+                <i class="fa fa-chevron-left"></i> 通过Hexo找寻自己的Github Pages
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/18/数据中台/数据建模-维度/" rel="prev" title="数据建模-维度">
+                数据建模-维度 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#设想"><span class="nav-number">1.</span> <span class="nav-text">设想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准数据中台构架"><span class="nav-number">2.</span> <span class="nav-text">标准数据中台构架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理想的仓库"><span class="nav-number">3.</span> <span class="nav-text">理想的仓库</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

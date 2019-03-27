@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Sonar代码审查-缺陷和修改Resources should be closed资源未关闭，打开发现有两处用到的IO流没有关闭 Conditions should not unconditionally evaluate to “TRUE” or to “FALSE”if/else判断里出现了重复判断，比如在if(a&amp;gt;10)的执行体里面又判断if(a&amp;lt;0)，而后者肯定不会是true">
+<meta name="keywords" content="review">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sonar代码审查-缺陷和修改">
+<meta property="og:url" content="http://cenrise.com/2017/05/30/review/Sonar代码审查-缺陷和修改/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="Sonar代码审查-缺陷和修改Resources should be closed资源未关闭，打开发现有两处用到的IO流没有关闭 Conditions should not unconditionally evaluate to “TRUE” or to “FALSE”if/else判断里出现了重复判断，比如在if(a&amp;gt;10)的执行体里面又判断if(a&amp;lt;0)，而后者肯定不会是true">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-30T09:38:07.550Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sonar代码审查-缺陷和修改">
+<meta name="twitter:description" content="Sonar代码审查-缺陷和修改Resources should be closed资源未关闭，打开发现有两处用到的IO流没有关闭 Conditions should not unconditionally evaluate to “TRUE” or to “FALSE”if/else判断里出现了重复判断，比如在if(a&amp;gt;10)的执行体里面又判断if(a&amp;lt;0)，而后者肯定不会是true">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2017/05/30/review/Sonar代码审查-缺陷和修改/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Sonar代码审查-缺陷和修改 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2017/05/30/review/Sonar代码审查-缺陷和修改/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Sonar代码审查-缺陷和修改
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-05-30 16:43:49" itemprop="dateCreated datePublished" datetime="2017-05-30T16:43:49+08:00">2017-05-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-30 17:38:07" itemprop="dateModified" datetime="2018-05-30T17:38:07+08:00">2018-05-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/review/" itemprop="url" rel="index"><span itemprop="name">review</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Sonar代码审查-缺陷和修改"><a href="#Sonar代码审查-缺陷和修改" class="headerlink" title="Sonar代码审查-缺陷和修改"></a>Sonar代码审查-缺陷和修改</h2><p>Resources should be closed<br>资源未关闭，打开发现有两处用到的IO流没有关闭</p>
+<p>Conditions should not unconditionally evaluate to “TRUE” or to “FALSE”<br>if/else判断里出现了重复判断，比如在if(a&gt;10)的执行体里面又判断if(a&lt;0)，而后者肯定不会是true</p>
+<p>Exception handlers should preserve the original exception<br>处理异常的时候应该保留原始的异常情况，不要直接来个catch(Exception e)了事</p>
+<p> Throwable.printStackTrace(…) should not be called<br>不应该直接调用e.printStackTrace()，而是用Loggers来处理（就是打Log）。</p>
+<p>Loggers的优势是：Users are able to easily retrieve the logs.<br>The format of log messages is uniform and allow users to browse the logs easily.<br>Instance methods should not write to “static” fields6<br>不要用实例方法改变静态成员，理想情况下，静态变量只通过同步的静态方法来改变</p>
+<p>“public static” fields should be constant<br>公共静态成员应该加上final，也就是public static final 一般不分家</p>
+<p>Thread.run() and Runnable.run() should not be called directly<br>不应该直接调用Thread和Runnaale对象的run方法，直接调用run会使得run方法执行在当前线程，失去了开启新线程的意义。但有时候可能会这样做，下面有个例子。</p>
+<p>Generic exceptions should never be thrown<br>不太理解，大意是说不要直接抛Error,RuntimeException/Throwable/Exception这样的通用的异常。我的具体应用是：throw new Error(“Error copying database”)，给出的建议是：Define and throw a dedicated exception instead of using a generic one（定义并抛出一个专用的异常来代替一个通用的异常）</p>
+<p>Class variable fields should not have public accessibility<br>类变量不要设置为public，而是设为private，再提供get和set方法。</p>
+<p>Sections of code should not be “commented out”<br>不要再注释中出现大量的代码段，会使代码可读性变差</p>
+<p>Package declaration should match source file directory<br>这个没理解，包的声明应该与源文件目录匹配。</p>
+<p>Utility classes should not have public constructors<br>工具类不应该有公共的构造器，也就是说至少要有一个private的构造器，如果没有，默认的构造器是public的。</p>
+<p>The diamond operator (“&lt;&gt;”) should be used<br>在定义集合的时候，等号右边的&lt;&gt;内不需要再写上元素类型，直接空着就行。</p>
+<p>Lambdas and anonymous classes should not have too many lines<br>Lambdas表达式和匿名内部类不要写太多行，一般最多写20行。</p>
+<p>Anonymous inner classes containing only one method should become lambdas8<br>只包含一个方法的匿名内部类应该写成Lambdas表达式的形式，增强代码可读性</p>
+<p>Try-with-resources should be used8<br>用Try-with-resources的形式取代try/catch/finally的形式，这个有待于以后学习。<br><figure class="highlight plain"><figcaption><span>con </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   try (PreparedStatement prep = con.prepareConnection(&quot;Update ...&quot;)) &#123;</span><br><span class="line">       //prep.doSomething();</span><br><span class="line">       //...</span><br><span class="line">       //etc</span><br><span class="line">con.commit();</span><br><span class="line">   &#125; catch (SQLException e) &#123;</span><br><span class="line">       //any other actions necessary on failure</span><br><span class="line">       con.rollback();</span><br><span class="line">       //consider a re-throw, throwing a wrapping exception, etc</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Methods should not be empty<br>不要写空方法，除非这种情况：An abstract class may have empty methods, in order to provide default implementations for child classes.</p>
+<p>Source files should not have any duplicated blocks<br>源文件中不要出现任何重复的代码段或行或字符串等。没理解。</p>
+<p>“switch case” clauses should not have too many lines<br>“switch case” 每个case里面的代码不要太长，太长的话可以考虑写个方法代替，主要是为了增强代码可读性</p>
+<p>Nested blocks of code should not be left empty<br>嵌套代码块不要是空的，比如 if( a &gt; 0 ) {  doSomething()  } else { }，这时候应该把后面的else{}去掉。</p>
+<p>Methods should not be too complex<br>方法不要太复杂，否则难以理解和维护。</p>
+<p>Unused private fields should be removed<br>没有使用的private的成员变量应该移除掉。</p>
+<p>Dead stores should be removed<br>没有用到的本地变量或其他死存储应该移除掉，也就是写方法的时候，定义的变量如果后来发现根本用不到，要记得删掉那行代码。</p>
+<p>“switch” statements should end with a “default” clause<br>switch语句应该以default结束，这是一种defensive programming思想</p>
+<p>Unused method parameters should be removed<br>没有用到的方法参数应该移除掉</p>
+<p>Control flow statements “if”, “for”, “while”, “switch” and “try” should not be nested too deeply4<br>if /for/while/try这样的嵌套不要太复杂</p>
+<p>Useless parentheses around expressions should be removed to prevent any misunderstanding3<br>没有意义的括号不要随便加，以免造成误解，比如”=”两边对象类型是相同的，就不要强转。</p>
+<p>“for” loop stop conditions should be invariant<br>for循环的结果条件不能是变量，而应该是常量</p>
+<p>“static” members should be accessed statically<br>static成员是与类、静态方法相联系的。</p>
+<p>Catches should be combined<br>具体参考下面的18，我还没理解</p>
+<p>Primitives should not be boxed just for “String” conversion<br>不要使用 4+” “这样的方式将int值转变为字符串，而是使用 Integer.toString(4)这样的方式。<br>就像Integer.parseInt(“我是字符串”)这样，不要偷懒。</p>
+<p>Classes should not be empty<br>不要写空类</p>
+<p>Unused local variables should be removed<br>没有用到的本地变量要删掉</p>
+<p>“entrySet()” should be iterated when both the key and value are needed<br>直接看英文更直接：When only the keys from a map are needed in a loop, iterating the keySet makes sense. But when both the key and the value are needed, it’s more efficient to iterate theentrySet, which will give access to both the key and value, instead.<br>也就是说，如果只需要Map的Key，那么直接iterate这个Map的keySet就可以了，但是如果Key和value都需要，就iterate这个Map。具体看下面的19.</p>
+<p>Method parameters, caught exceptions and foreach variables should not be reassigned<br>方法参数/捕获的异常/foreach的变量不应该被重新赋值。</p>
+<p>Collection.isEmpty() should be used to test for emptiness<br>当判断集合是否为空的时候，不要使用if (myCollection.size() == 0) 这样的方式，而是使用if (myCollection.isEmpty()这样的方式，后者性能更高。</p>
+<p>Standard outputs should not be used directly to log anything<br>标准输出不直接打印任何东西，也就是打log的时候，不要使用System.out.println(“My Message”)这样的方式，而是使用logger.log(“My Message”)这种方式。</p>
+<p>Generic wildcard types should not be used in return parameters<br>通配符不应该出现在返回声明中。比如这句：List &lt;? extends Animal&gt;getAnimals(){…}， 我们无法知道“是否可以把a Dog, a Cat 等加进去”，等之后用到这个方法的时候，我们没必要去考虑这种问题（前面引号里面的）。</p>
+<p>Synchronized classes Vector, Hashtable, Stack and StringBuffer should not be used1<br>不要使用同步的Vector/HashTable/Stack/StringBuffer等。在早期，出于线程安全问题考虑，java API 提供了这些类。但是同步会极大影响性能，即使是在同一个线程中使用他们。<br>通常可以这样取代：<br><code>ArrayList  or  LinkedList   instead of  Vector
+Deque  instead of  Stack
+HashMap  instead of  Hashtable
+StringBuilder  instead of  StringBuffer
+Exit methods should not be called</code><br>尽量不要调用system.exit()方法。</p>
+<p>Local Variables should not be declared and then immediately returned or thrown<br>本地变量如果赋值之后直接return了，那就直接return本地变量的赋值语句。</p>
+<p>Field names should comply with a naming convention<br>命名要规范</p>
+<p>Local variable and method parameter names should comply with a naming convention<br>命名要规范</p>
+<p>String literals should not be duplicated5<br>字符串不应该重复，如果多次用到同一字符串，建议将该字符串定义为字符串常量，再引用。</p>
+<p>Return of boolean expressions should not be wrapped into an “if-then-else” statement3<br>不要写if (  a &gt; 4  ) {  return false  } else { return true }这样的代码，直接写return a &gt; 4。</p>
+<p>Static non-final field names should comply with a naming convention<br>命名要规范</p>
+<p>Modifiers should be declared in the correct order<br>修饰符等要按约定俗成的顺序书写 ，例如，写成public static 而不是static public </p>
+<p>The members of an interface declaration or class should appear in a pre-defined order2<br>与前面的一个问题类似，根据Oracle定义的Java代码规范中，不同代码的出现位置应该如下所示：<br>class and instance variables–Constructors–Methods</p>
+<p>Array designators “[]” should be on the type, not the variable<br>数组的括号要写在类型后面，而不是变量后面，例如 int[] a 而不是int a[]</p>
+<p>Multiple variables should not be declared on the same line1<br>不要在同一行定义多个变量</p>
+<p>“switch” statements should have at least 3 “case” clauses<br>当至少有3种或者3种以上的情况时，才考虑用switch，否则用if/else的形式。</p>
+<p>Overriding methods should do more than simply call the same method in the super class<br>既然在子类中重写了父类的某个方法，那就再这个方法中做些与父类方法不同的事情，否则没必要重写。</p>
+<p>Statements should be on separate lines<br>不要把这样的代码写在同一行：if(someCondition)    doSomething()；而是应该写成下面的形式<br>if(someCondition) {<br>doSomething()<br>}<br>Method names should comply with a naming convention1<br>命名要规范<br>“TODO” tags should be handle    TODO标签要及时处理，该做的事情不要忘了做</p>
+<h2 id="部分规则详细说明"><a href="#部分规则详细说明" class="headerlink" title="部分规则详细说明"></a>部分规则详细说明</h2><h4 id="1-The-members-of-an-interface-declaration-or-class-should-appear-in-a-pre-defined-order"><a href="#1-The-members-of-an-interface-declaration-or-class-should-appear-in-a-pre-defined-order" class="headerlink" title="1.The members of an interface declaration or class should appear in a pre-defined order"></a>1.The members of an interface declaration or class should appear in a pre-defined order</h4><p>正确的顺序如下所示：静态成员变量→成员变量→构造器→方法</p>
+<figure class="highlight plain"><figcaption><span>class Foo&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static final int OPEN = 4;  //Class and instance variables</span><br><span class="line">private int field = 0;</span><br><span class="line">public Foo() &#123;...&#125;    //Constructors</span><br><span class="line">public boolean isTrue() &#123;...&#125;    //Methods</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-The-diamond-operator-“-lt-gt-”-should-be-used"><a href="#2-The-diamond-operator-“-lt-gt-”-should-be-used" class="headerlink" title="2.The diamond operator (“&lt;&gt;”) should be used"></a>2.The diamond operator (“&lt;&gt;”) should be used</h4><p>Noncompliant Code Example：不规范的示例</p>
+<figure class="highlight plain"><figcaption><span>strings </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, List&lt;Integer&gt;&gt; map = new HashMap&lt;String, List&lt;Integer&gt;&gt;();  // Noncompliant</span><br><span class="line">Compliant Solution ：规范的示例</span><br><span class="line">List&lt;String&gt; strings = new ArrayList&lt;&gt;();</span><br><span class="line">Map&lt;String, List&lt;Integer&gt;&gt; map = new HashMap&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<h4 id="3-Sections-of-code-should-not-be-“commented-out”"><a href="#3-Sections-of-code-should-not-be-“commented-out”" class="headerlink" title="3.Sections of code should not be “commented out”"></a>3.Sections of code should not be “commented out”</h4><p>代码片段不应该出现在注释中，这样会bloat程序，可读性变差<br><code>Programmers should not comment out code as it bloats programs and reduces readability.
+Unused code should be deleted and can be retrieved from source control history if required.</code></p>
+<h4 id="4-Utility-classes-should-not-have-public-constructors"><a href="#4-Utility-classes-should-not-have-public-constructors" class="headerlink" title="4.Utility classes should not have public constructors"></a>4.Utility classes should not have public constructors</h4><p>工具类不应该有public的构造器，也就是工具类至少要定义一个non-public的构造器<br>Utility classes, which are a collection of static members, are not meant to be instantiated. Even abstract utility classes, which can be extended, should not have public constructors.<br>Java adds an implicit public constructor to every class which does not define at least one explicitly. Hence, at least one non-public constructor should be defined.</p>
+<figure class="highlight plain"><figcaption><span>StringUtils &#123;</span><a href="//">Noncompliant Code Example</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    public static String concatenate(String s1, String s2) &#123;</span><br><span class="line">          return s1 + s2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>StringUtils &#123;</span><a href="//Compliant">Solution</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    private StringUtils() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static String concatenate(String s1, String s2) &#123;</span><br><span class="line">    return s1 + s2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="5-”public-static”-fields-should-be-constant"><a href="#5-”public-static”-fields-should-be-constant" class="headerlink" title="5.”public static” fields should be constant"></a>5.”public static” fields should be constant</h4><p>公共的静态成员应该加上final来修饰<br>There is no good reason to declare a field “public” and “static” without also declaring it “final”. Most of the time this is a kludge to share a state among several objects. But with this approach, any object can do whatever it wants with the shared state, such as setting it to null.<br>public static Foo foo = new Foo();//不规范的<br>public static final Foo FOO = new Foo();//规范的</p>
+<p>6.Class variable fields should not have public accessibility</p>
+<figure class="highlight plain"><figcaption><span>class MyClass &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static final int SOME_CONSTANT = 0;    // Compliant - constants are not checked</span><br><span class="line">public String firstName;                      // Noncompliant</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>class MyClass &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static final int SOME_CONSTANT = 0;    // Compliant - constants are not checked</span><br><span class="line">private String firstName;                      // Compliant</span><br><span class="line">public String getFirstName() &#123;</span><br><span class="line">return firstName;</span><br><span class="line">&#125;</span><br><span class="line">public void setFirstName(String firstName) &#123;</span><br><span class="line">this.firstName = firstName;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">#### 7.Static non-final field names should comply with a naming convention</span><br><span class="line">public final class MyClass &#123;//Noncompliant Code Example</span><br><span class="line">      private static String foo_bar;</span><br><span class="line">&#125;</span><br><span class="line">class MyClass &#123;//Compliant Solution</span><br><span class="line">private static String fooBar;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="8-”switch”-statements-should-have-at-least-3-“case”-clauses"><a href="#8-”switch”-statements-should-have-at-least-3-“case”-clauses" class="headerlink" title="8.”switch” statements should have at least 3 “case” clauses"></a>8.”switch” statements should have at least 3 “case” clauses</h4><p>当有3种或3种情况以上的时候，才用switch，否则用if/else<br>switch statements are useful when there are many different cases depending on the value of the same expression.<br>For just one or two cases however, the code will be more readable with if statements.</p>
+<h4 id="9-String-literals-should-not-be-duplicated"><a href="#9-String-literals-should-not-be-duplicated" class="headerlink" title="9.String literals should not be duplicated"></a>9.String literals should not be duplicated</h4><figure class="highlight plain"><figcaption><span> </span><a href="//">Noncompliant - "action1" is duplicated 3 times</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">execute(&quot;action1&quot;);</span><br><span class="line">release(&quot;action1&quot;);</span><br><span class="line"></span><br><span class="line">private static final String ACTION_1 = &quot;action1&quot;;  // Compliant</span><br><span class="line">prepare(ACTION_1);                                            // Compliant</span><br><span class="line">execute(ACTION_1);</span><br><span class="line">release(ACTION_1);</span><br></pre></td></tr></table></figure>
+<h4 id="10-Return-of-boolean-expressions-should-not-be-wrapped-into-an-“if-then-else”-statement"><a href="#10-Return-of-boolean-expressions-should-not-be-wrapped-into-an-“if-then-else”-statement" class="headerlink" title="10.Return of boolean expressions should not be wrapped into an “if-then-else” statement"></a>10.Return of boolean expressions should not be wrapped into an “if-then-else” statement</h4><p>Replace this if-then-else statement by a single return statement</p>
+<figure class="highlight plain"><figcaption><span>(expression) &#123;//Noncompliant Code Example</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">      return true;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">     return false;</span><br><span class="line">&#125;</span><br><span class="line">return expression;//Compliant Solution</span><br><span class="line">return !!expression;</span><br></pre></td></tr></table></figure>
+<h4 id="11-Method-parameters-caught-exceptions-and-foreach-variables-should-not-be-reassigned"><a href="#11-Method-parameters-caught-exceptions-and-foreach-variables-should-not-be-reassigned" class="headerlink" title="11.Method parameters, caught exceptions and foreach variables should not be reassigned"></a>11.Method parameters, caught exceptions and foreach variables should not be reassigned</h4><p>方法参数，捕获的异常，foreach里的变量，都不应该重新赋值</p>
+<figure class="highlight plain"><figcaption><span>MyClass &#123;//Noncompliant Code Example：不规范代码示例</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    public String name;</span><br><span class="line">    public MyClass(String name) &#123;</span><br><span class="line">            name = name;          // Noncompliant - useless identity assignment</span><br><span class="line">    &#125;</span><br><span class="line">    public int add(int a, int b) &#123;</span><br><span class="line">        a = a + b;                // Noncompliant</span><br><span class="line">        return a;                 // Seems like the parameter is returned as is, what is the point?</span><br><span class="line">   &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        MyClass foo = new MyClass();</span><br><span class="line">        int a = 40;</span><br><span class="line">        int b = 2;</span><br><span class="line">        foo.add(a, b);                  // Variable &quot;a&quot; will still hold 40 after this call</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>MyClass &#123;//Compliant Solution：规范代码示例</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">    public String name;</span><br><span class="line">    public MyClass(String name) &#123;</span><br><span class="line">         this.name = name;              // Compliant</span><br><span class="line">    &#125;</span><br><span class="line">    public int add(int a, int b) &#123;</span><br><span class="line">        return a + b;                  // Compliant</span><br><span class="line">    &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">    MyClass foo = new MyClass();</span><br><span class="line">        int a = 40;</span><br><span class="line">        int b = 2;</span><br><span class="line">        foo.add(a, b);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="12-Local-Variables-should-not-be-declared-and-then-immediately-returned-or-thrown"><a href="#12-Local-Variables-should-not-be-declared-and-then-immediately-returned-or-thrown" class="headerlink" title="12.Local Variables should not be declared and then immediately returned or thrown"></a>12.Local Variables should not be declared and then immediately returned or thrown</h4><p>Noncompliant Code Example：不规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>long computeDurationInMilliseconds() &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">long duration = (((hours * 60) + minutes) * 60 + seconds ) * 1000 ;</span><br><span class="line">return duration;</span><br><span class="line">&#125;</span><br><span class="line">public void doSomething() &#123;</span><br><span class="line">RuntimeException myException = new RuntimeException();</span><br><span class="line">throw myException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Compliant Solution：规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>long computeDurationInMilliseconds() &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">return (((hours * 60) + minutes) * 60 + seconds ) * 1000 ;</span><br><span class="line">&#125;</span><br><span class="line">public void doSomething() &#123;</span><br><span class="line">throw new RuntimeException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="13-Thread-run-and-Runnable-run-should-not-be-called-directly"><a href="#13-Thread-run-and-Runnable-run-should-not-be-called-directly" class="headerlink" title="13.Thread.run() and Runnable.run() should not be called directly"></a>13.Thread.run() and Runnable.run() should not be called directly</h4><p>The purpose of theThread.run()andRunnable.run()methods is to execute code in a separate, dedicated thread. Calling those methods directly doesn’t make sense because it causes their code to be executed in the current thread.<br>Thread和Runnable里面的run方法设计的目的是让run方法里面的代码在不同的线程中执行。如果直接调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Noncompliant Code Example：不规范的代码示例</span><br><span class="line">Thread myThread = new Thread(runnable);</span><br><span class="line">myThread.run(); // Noncompliant</span><br><span class="line"></span><br><span class="line">Compliant Solution：规范代码示例</span><br><span class="line">Thread myThread = new Thread(runnable);</span><br><span class="line">myThread.start(); // Compliant</span><br></pre></td></tr></table></figure></p>
+<p>这部分内容为个人理解，可以略过<br>但在有些情况，也会直接调用Runnable的run方法，<br>下面这个postTaskSafely方法会保证task永远在主线程中执行</p>
+<figure class="highlight plain"><figcaption><span>static void postTaskInMainThread(Runnable task) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">     int curThreadId= android.os.Process.myTid();//得到当前线程的id</span><br><span class="line">    if(curThreadId==getMainThreadId()) &#123;// 如果当前线程是主线程</span><br><span class="line">            task.run();//直接执行</span><br><span class="line">    &#125;else&#123;// 如果当前线程不是主线程</span><br><span class="line">        getMainThreadHandler().post(task);//用主线程的Handler来post</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="14-Lambdas-and-anonymous-classes-should-not-have-too-many-lines"><a href="#14-Lambdas-and-anonymous-classes-should-not-have-too-many-lines" class="headerlink" title="14.Lambdas and anonymous classes should not have too many lines"></a>14.Lambdas and anonymous classes should not have too many lines</h4><p>Anonymous classes and lambdas (with Java 8) are a very convenient and compact way to inject a behavior without having to create a dedicated class. But those anonymous inner classes and lambdas should be used only if the behavior to be injected can be defined in a few lines of code, otherwise the source code can quickly become unreadable.<br>anonymous class number of lines ： at most 20</p>
+<h4 id="15-Resources-should-be-closed：该关闭的一定记得关闭"><a href="#15-Resources-should-be-closed：该关闭的一定记得关闭" class="headerlink" title="15.Resources should be closed：该关闭的一定记得关闭"></a>15.Resources should be closed：该关闭的一定记得关闭</h4><p>Java’s garbage collection cannot be relied on to clean up everything. Specifically, connections, streams, files and other classes that implement theCloseableinterface or it’s super-interface,AutoCloseable, must be manually closed after creation. Failure to do so will result in a resource leak which could bring first the application and then perhaps the box it’s on to their knees.<br>Noncompliant Code Example：不规范的代码示例</p>
+<figure class="highlight plain"><figcaption><span>stream </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    for (String property : propertyList) &#123;</span><br><span class="line">    stream = new FileOutputStream(&quot;myfile.txt&quot;);  // Noncompliant</span><br><span class="line">    // ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;catch(Exception e)&#123;</span><br><span class="line">    // ...</span><br><span class="line">&#125;finally&#123;</span><br><span class="line">    stream.close();  // Multiple streams were opened. Only the last is closed.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Compliant Solution：规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>stream </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> try&#123;</span><br><span class="line">     stream = new FileOutputStream(&quot;myfile.txt&quot;);</span><br><span class="line">     for (String property : propertyList) &#123;</span><br><span class="line">         // ...</span><br><span class="line">     &#125;</span><br><span class="line">&#125;catch(Exception e)&#123;</span><br><span class="line">     // ...</span><br><span class="line">&#125;finally&#123;</span><br><span class="line">    stream.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="16-Exception-handlers-should-preserve-the-original-exception"><a href="#16-Exception-handlers-should-preserve-the-original-exception" class="headerlink" title="16.Exception handlers should preserve the original exception"></a>16.Exception handlers should preserve the original exception</h4><p>Noncompliant Code Example:不规范的代码示例<br>// Noncompliant - exception is lost<br>try { /<em> … </em>/ } catch (Exception e) { LOGGER.info(“context”); }<br>// Noncompliant - exception is lost (only message is preserved)<br>try { /<em> … </em>/ } catch (Exception e) { LOGGER.info(e.getMessage()); }<br>// Noncompliant - exception is lost<br>try { /<em> … </em>/ } catch (Exception e) { throw new RuntimeException(“context”); }</p>
+<p>Compliant Solution:规范的代码示例</p>
+<figure class="highlight plain"><figcaption><span>&#123;</span><a href="/*">... */ &#125; catch (Exception e) &#123; LOGGER.info(e); &#125;</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">try &#123; /* ... */ &#125; catch (Exception e) &#123; throw new RuntimeException(e); &#125;</span><br><span class="line">try &#123;</span><br><span class="line">/* ... */</span><br><span class="line">&#125; catch (RuntimeException e) &#123;</span><br><span class="line">doSomething();</span><br><span class="line">throw e;</span><br><span class="line">&#125; catch (Exception e) &#123;</span><br><span class="line">// Conversion into unchecked exception is also allowed</span><br><span class="line">throw new RuntimeException(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="17-Catches-should-be-combined"><a href="#17-Catches-should-be-combined" class="headerlink" title="17.Catches should be combined"></a>17.Catches should be combined</h4><p>Since Java 7 it has been possible to catch multiple exceptions at once. Therefore, when multiplecatchblocks have the same code, they should be combined for better readability.<br>Note that this rule is automatically disabled when the project’ssonar.java.sourceis lower than7.</p>
+<p>Noncompliant Code Example：不规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>(IOException e) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    doCleanup();</span><br><span class="line">    logger.log(e);</span><br><span class="line">&#125;catch (SQLException e) &#123; //Noncompliant</span><br><span class="line">    doCleanup();</span><br><span class="line">    logger.log(e);</span><br><span class="line"> &#125;catch (TimeoutException e) &#123;  // Compliant; block contents are different</span><br><span class="line">     doCleanup();</span><br><span class="line">     throw e;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>Compliant Solution：规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>(IOException|SQLException e) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    doCleanup();</span><br><span class="line">    logger.log(e);</span><br><span class="line"> &#125;catch (TimeoutException e) &#123;</span><br><span class="line">    doCleanup();</span><br><span class="line">    throw e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>18.”entrySet()” should be iterated when both the key and value are needed<br>Noncompliant Code Example：不规范的代码示例</p>
+<figure class="highlight plain"><figcaption><span>void doSomethingWithMap(Map map) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for (String key : map.keySet()) &#123;  // Noncompliant; for each key the value is retrieved</span><br><span class="line">Object value = map.get(key);</span><br><span class="line">// ...</span><br><span class="line">&#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Compliant SolutionL：规范代码示例</p>
+<figure class="highlight plain"><figcaption><span>void doSomethingWithMap(Map map) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for (Map.Entry entry : map.entrySet()) &#123;</span><br><span class="line">String key = entry.getKey();</span><br><span class="line">Object value = entry.getValue();</span><br><span class="line">// ...</span><br><span class="line">&#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Use a logger to log this exception<br>You should probably clarify which logger are you using.</p>
+<p>org.apache.commons.logging.Log interface has method void error(Object message, Throwable t) (and method void info(Object message, Throwable t)), which logs the stack trace together with your custom message. Log4J implementation has this method too.</p>
+<p>So, probably you need to write:<br>logger.error(“BOOM!”, e);<br>If you need to log it with INFO level (though, it might be a strange use case), then:<br>logger.info(“Just a stack trace, nothing to worry about”, e);<br>Hope it helps.</p>
+<p>Rename ‘i’ as this name is already used in declaration at line 26</p>
+<h2 id="阻断"><a href="#阻断" class="headerlink" title="阻断"></a>阻断</h2><h4 id="1、Close-this”FileInputStream”-in-a-“finally”-clause"><a href="#1、Close-this”FileInputStream”-in-a-“finally”-clause" class="headerlink" title="1、Close this”FileInputStream” in a “finally” clause."></a>1、Close this”FileInputStream” in a “finally” clause.</h4><p>在finally中关闭FileInputStream，这个最为常见，主要是关闭方式不对，finally代码块中，应该要对每个stream进行单独关闭，而不能统一写在一个try-catch代码中，jdk 7 可以考虑try-resources方式关闭，代码相对优雅。<br>另外数据库操作的statement和resultRs没有关闭的情况也非常多。这个也是要重点留意的地方。</p>
+<h4 id="2、A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere"><a href="#2、A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere" class="headerlink" title="2、A”NullPointerException” could be thrown; “tom” is nullablehere"></a>2、A”NullPointerException” could be thrown; “tom” is nullablehere</h4><p>空指针，极为讨厌的问题，主要是编码经验缺少的体现。一般的高手在编码过程中，就会第一时间考虑到这类情况，并做相应的处理。解决方式无它，先判断或者先实例化，再访问里面的属性或者成员。</p>
+<h2 id="严重"><a href="#严重" class="headerlink" title="严重"></a>严重</h2><h4 id="1、Define-and-throw-a-dedicated-exception-instead-of-using-a-generic-one"><a href="#1、Define-and-throw-a-dedicated-exception-instead-of-using-a-generic-one" class="headerlink" title="1、Define and throw a dedicated exception instead of using a generic one"></a>1、Define and throw a dedicated exception instead of using a generic one</h4><p>定义并抛出一个专用的异常来代替一个通用的异常。</p>
+<h4 id="2、Removethis-hard-coded-password"><a href="#2、Removethis-hard-coded-password" class="headerlink" title="2、Removethis hard-coded password"></a>2、Removethis hard-coded password</h4><p>移除代码里硬编码的密码信息。会有少许的误判的情况，一般是变量包含：PWD或者password，所以如果真的不是硬编码，可以考虑更换变量名称，比如PWD改PW等等。</p>
+<h4 id="3、Eitherlog-or-rethrow-this-exception"><a href="#3、Eitherlog-or-rethrow-this-exception" class="headerlink" title="3、Eitherlog or rethrow this exception"></a>3、Eitherlog or rethrow this exception</h4><p>catch异常之后，使用log方式或者throw异常的方式解决。如果业务上真的没有throw或者记录日志的话，可以使用log.debug的方式填充来解决问题。</p>
+<h4 id="4、Makethis-IP-“127-0-0-1”-address-configurable"><a href="#4、Makethis-IP-“127-0-0-1”-address-configurable" class="headerlink" title="4、Makethis IP “127.0.0.1” address configurable"></a>4、Makethis IP “127.0.0.1” address configurable</h4><p>将IP弄到配置文件中，不要硬编码到代码里。个人觉得改动稍大！</p>
+<h4 id="5、Make-this”public-static-JSAPI”-field-final"><a href="#5、Make-this”public-static-JSAPI”-field-final" class="headerlink" title="5、Make this”public static JSAPI” field final"></a>5、Make this”public static JSAPI” field final</h4><p>如果你将这个变量设置为public访问方式，同时又是静态Static方式，就要考虑将它设置为final了，因为这个是共享变量，其它类可以随时随地将它设置为别的值。所以如果是只是当前类使用，可以考虑将公开访问方式改为私有。</p>
+<h4 id="6、Makethe-enclosing-method-“static”-or-remove-this-set"><a href="#6、Makethe-enclosing-method-“static”-or-remove-this-set" class="headerlink" title="6、Makethe enclosing method “static” or remove this set"></a>6、Makethe enclosing method “static” or remove this set</h4><p>见代码：</p>
+<figure class="highlight plain"><figcaption><span>class MyClass &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">  private static int count = 0;</span><br><span class="line">  public void doSomething() &#123;</span><br><span class="line">    //...</span><br><span class="line">    count++;  // Noncompliant</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">```不要使用非静态方法去更新静态字段，这样很难获得正确的结果，如果有多个类实例和/或多个线程，则很容易导致错误。理想情况下，静态字段仅从同步静态方法中更新。</span><br><span class="line">#### 7、Override&quot;equals(Object obj)&quot; to comply with the contract of the&quot;compareTo(T o)&quot; method</span><br><span class="line">如果重写了compareTo方法，同时也应重写equals方法。</span><br><span class="line">#### 8、Make&quot;body&quot; transient or serializable.</span><br><span class="line"></span><br><span class="line">```public class Address &#123;</span><br><span class="line">  //...</span><br><span class="line">&#125;</span><br><span class="line">public class Person implements Serializable &#123;</span><br><span class="line">  private static final long serialVersionUID = 1905122041950251207L;</span><br><span class="line">  private String name;</span><br><span class="line"></span><br><span class="line">  private Address address;  // Noncompliant; Address isn&apos;t serializable</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果person已经序列化，其成员变量Address也进行序列化。不然转化时会有问题。</p>
+<h4 id="9-Floating-point-numbers-should-not-be-tested-for-equality"><a href="#9-Floating-point-numbers-should-not-be-tested-for-equality" class="headerlink" title="9 Floating point numbers should not be tested for equality"></a>9 Floating point numbers should not be tested for equality</h4><p>浮点类型的数字，不要通过==或者!=方式其它类型比较，因为浮点是不精确的，所以在比较时，会进行类型升级升级原则如下：<br>·  如果运算符任意一方的类型为double，则另一方会转换为double<br>·  否则，如果运算符任意一方的类型为float，则另一方会转换为float<br>·  否则，如果运算符任意一方的类型为long，则另一方会转换为long<br>·  否则，两边都会转换为int</p>
+<p>以下的方式得到的结果都是false。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">float myNumber = 3.146;</span><br><span class="line">if ( myNumber == 3.146f ) &#123; //Noncompliant. Because of floating point imprecision, this will be false</span><br><span class="line"> </span><br><span class="line">if ( myNumber != 3.146f ) &#123; //Noncompliant. Because of floating point imprecision, this will be true</span><br><span class="line">if (myNumber &lt; 4 || myNumber &gt; 4) &#123; // Noncompliant; indirect  </span><br><span class="line">float zeroFloat = 0.0f;</span><br><span class="line">if (zeroFloat == 0) &#123;  // Noncompliant. Computations may end up with a value close but not equal to zero.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以，要比较浮点数是否相等，需要做的事情是：</p>
+<pre><code>排除NaN和无穷
+
+在精度范围内进行比较
+</code></pre><p>正确的例子：</p>
+<figure class="highlight plain"><figcaption><span>boolean isEqual(double a, double b) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    if (Double.isNaN(a) || Double.isNaN(b) || Double.isInfinite(a) || Double.isInfinite(b)) &#123;</span><br><span class="line">       return false;</span><br><span class="line">    &#125;</span><br><span class="line">    return (a - b) &lt; 0.001d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="10、Thiscall-to-“contains-”-may-be-a-performance-hot-spot-if-the-collectionis-large"><a href="#10、Thiscall-to-“contains-”-may-be-a-performance-hot-spot-if-the-collectionis-large" class="headerlink" title="10、Thiscall to “contains()” may be a performance hot spot if the collectionis large."></a>10、Thiscall to “contains()” may be a performance hot spot if the collectionis large.</h4><p>如果collection的记录数非常大的话，它的contains方法的时间复杂度是很高的。所以开发过程中要注意这一点。下面的是列表：</p>
+<figure class="highlight plain"><figcaption><span>ArrayList</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">contains</span><br><span class="line">remove</span><br><span class="line">·  LinkedList</span><br><span class="line"></span><br><span class="line">get</span><br><span class="line">contains</span><br><span class="line">·  ConcurrentLinkedQueue</span><br><span class="line"></span><br><span class="line">size</span><br><span class="line">contains</span><br><span class="line">·  ConcurrentLinkedDeque</span><br><span class="line"></span><br><span class="line">size</span><br><span class="line">contains</span><br><span class="line">·  CopyOnWriteArrayList</span><br><span class="line"></span><br><span class="line">add</span><br><span class="line">contains</span><br><span class="line">remove</span><br><span class="line">·  CopyOnWriteArraySet</span><br><span class="line"></span><br><span class="line">add</span><br><span class="line">contains</span><br><span class="line">remove</span><br></pre></td></tr></table></figure>
+<h5 id="1-Equality-tests-should-not-be-made-with-floating-point-value"><a href="#1-Equality-tests-should-not-be-made-with-floating-point-value" class="headerlink" title="1.Equality tests should not be made with floating point value"></a>1.Equality tests should not be made with floating point value</h5><p>　　代码举例： if (result == num) //result和num均为double 之间比较会有精度损失<br>　　解决：BigDecimal data1 = new BigDecimal(totalArea);<br>　　　　　BigDecimal data2 = new BigDecimal(s1);<br>　　　　    int num = data1.compareTo(data2);//num =0 相等  &gt;0前者大于后者 ，反之 &lt;0 前者小于后者</p>
+<h5 id="2-This-class-overrides-“equals-”-and-should-therefore-also-override-“hashCode-”"><a href="#2-This-class-overrides-“equals-”-and-should-therefore-also-override-“hashCode-”" class="headerlink" title="2.This class overrides “equals()” and should therefore also override “hashCode()”.　"></a>2.This class overrides “equals()” and should therefore also override “hashCode()”.　</h5><p>　　代码举例：public boolean equals(Object obj){…}  //需要添加对应的hashCode方法<br>　　解决：可以添加一个最简单的hashCode方法　　<br>　　　　　public int hashCode() {return 0;}　　　</p>
+<h5 id="3-Synchronize-on-a-new-“Object”-instead"><a href="#3-Synchronize-on-a-new-“Object”-instead" class="headerlink" title="3.Synchronize on a new “Object” instead"></a>3.Synchronize on a new “Object” instead</h5><p>　　代码举例：synchronized (“实例化”) {…}   //里边必须是对象<br>　　解决： private Object obj =”实例化”；<br>　　　　　synchronized (obj ) {…}</p>
+<h5 id="4-Close-this”FileInputStream”-in-a-“finally”-clause"><a href="#4-Close-this”FileInputStream”-in-a-“finally”-clause" class="headerlink" title="4.Close this”FileInputStream” in a “finally” clause."></a>4.Close this”FileInputStream” in a “finally” clause.</h5><p>　　解决方法: 在finally中关闭FileInputStream，主要是关闭方式不对，finally代码块中，应该要对每个stream进行单独关闭，而不能统一写在一个try-catch代码中。</p>
+<h5 id="5-A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere"><a href="#5-A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere" class="headerlink" title="5.A”NullPointerException” could be thrown; “tom” is nullablehere"></a>5.A”NullPointerException” could be thrown; “tom” is nullablehere</h5><p>　　空指针，解决方式：先判断或者先实例化，再访问里面的属性或者成员。</p>
+<h5 id="6-Makethis-IP-“127-0-0-1”-address-configurable"><a href="#6-Makethis-IP-“127-0-0-1”-address-configurable" class="headerlink" title="6.Makethis IP “127.0.0.1” address configurable"></a>6.Makethis IP “127.0.0.1” address configurable</h5><p>　　解决方法:不要把IP地址写在此类中，应该在对应的系统文件或者相应的配置文件中配置</p>
+<h5 id="7-Either-log-or-rethrow-this-exception"><a href="#7-Either-log-or-rethrow-this-exception" class="headerlink" title="7.Either log or rethrow this exception."></a>7.Either log or rethrow this exception.</h5><p>　　解决方法: 把对应的输出写成Logger.error(“aaa“);的形式 </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/review/" rel="tag"># review</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/30/review/Findbug代码审查-缺陷和修改/" rel="next" title="Findbug代码审查-缺陷和修改">
+                <i class="fa fa-chevron-left"></i> Findbug代码审查-缺陷和修改
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/09/服务/和田市卫浴安装家具安装/" rel="prev" title="和田市卫浴安装家具安装">
+                和田市卫浴安装家具安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sonar代码审查-缺陷和修改"><span class="nav-number">1.</span> <span class="nav-text">Sonar代码审查-缺陷和修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部分规则详细说明"><span class="nav-number">2.</span> <span class="nav-text">部分规则详细说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-The-members-of-an-interface-declaration-or-class-should-appear-in-a-pre-defined-order"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.The members of an interface declaration or class should appear in a pre-defined order</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-The-diamond-operator-“-lt-gt-”-should-be-used"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.The diamond operator (“&lt;&gt;”) should be used</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Sections-of-code-should-not-be-“commented-out”"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.Sections of code should not be “commented out”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Utility-classes-should-not-have-public-constructors"><span class="nav-number">2.0.4.</span> <span class="nav-text">4.Utility classes should not have public constructors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-”public-static”-fields-should-be-constant"><span class="nav-number">2.0.5.</span> <span class="nav-text">5.”public static” fields should be constant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-”switch”-statements-should-have-at-least-3-“case”-clauses"><span class="nav-number">2.0.6.</span> <span class="nav-text">8.”switch” statements should have at least 3 “case” clauses</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-String-literals-should-not-be-duplicated"><span class="nav-number">2.0.7.</span> <span class="nav-text">9.String literals should not be duplicated</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-Return-of-boolean-expressions-should-not-be-wrapped-into-an-“if-then-else”-statement"><span class="nav-number">2.0.8.</span> <span class="nav-text">10.Return of boolean expressions should not be wrapped into an “if-then-else” statement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-Method-parameters-caught-exceptions-and-foreach-variables-should-not-be-reassigned"><span class="nav-number">2.0.9.</span> <span class="nav-text">11.Method parameters, caught exceptions and foreach variables should not be reassigned</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-Local-Variables-should-not-be-declared-and-then-immediately-returned-or-thrown"><span class="nav-number">2.0.10.</span> <span class="nav-text">12.Local Variables should not be declared and then immediately returned or thrown</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-Thread-run-and-Runnable-run-should-not-be-called-directly"><span class="nav-number">2.0.11.</span> <span class="nav-text">13.Thread.run() and Runnable.run() should not be called directly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-Lambdas-and-anonymous-classes-should-not-have-too-many-lines"><span class="nav-number">2.0.12.</span> <span class="nav-text">14.Lambdas and anonymous classes should not have too many lines</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-Resources-should-be-closed：该关闭的一定记得关闭"><span class="nav-number">2.0.13.</span> <span class="nav-text">15.Resources should be closed：该关闭的一定记得关闭</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-Exception-handlers-should-preserve-the-original-exception"><span class="nav-number">2.0.14.</span> <span class="nav-text">16.Exception handlers should preserve the original exception</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-Catches-should-be-combined"><span class="nav-number">2.0.15.</span> <span class="nav-text">17.Catches should be combined</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阻断"><span class="nav-number">3.</span> <span class="nav-text">阻断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Close-this”FileInputStream”-in-a-“finally”-clause"><span class="nav-number">3.0.1.</span> <span class="nav-text">1、Close this”FileInputStream” in a “finally” clause.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere"><span class="nav-number">3.0.2.</span> <span class="nav-text">2、A”NullPointerException” could be thrown; “tom” is nullablehere</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#严重"><span class="nav-number">4.</span> <span class="nav-text">严重</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Define-and-throw-a-dedicated-exception-instead-of-using-a-generic-one"><span class="nav-number">4.0.1.</span> <span class="nav-text">1、Define and throw a dedicated exception instead of using a generic one</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Removethis-hard-coded-password"><span class="nav-number">4.0.2.</span> <span class="nav-text">2、Removethis hard-coded password</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、Eitherlog-or-rethrow-this-exception"><span class="nav-number">4.0.3.</span> <span class="nav-text">3、Eitherlog or rethrow this exception</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、Makethis-IP-“127-0-0-1”-address-configurable"><span class="nav-number">4.0.4.</span> <span class="nav-text">4、Makethis IP “127.0.0.1” address configurable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、Make-this”public-static-JSAPI”-field-final"><span class="nav-number">4.0.5.</span> <span class="nav-text">5、Make this”public static JSAPI” field final</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、Makethe-enclosing-method-“static”-or-remove-this-set"><span class="nav-number">4.0.6.</span> <span class="nav-text">6、Makethe enclosing method “static” or remove this set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Floating-point-numbers-should-not-be-tested-for-equality"><span class="nav-number">4.0.7.</span> <span class="nav-text">9 Floating point numbers should not be tested for equality</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10、Thiscall-to-“contains-”-may-be-a-performance-hot-spot-if-the-collectionis-large"><span class="nav-number">4.0.8.</span> <span class="nav-text">10、Thiscall to “contains()” may be a performance hot spot if the collectionis large.</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Equality-tests-should-not-be-made-with-floating-point-value"><span class="nav-number">4.0.8.1.</span> <span class="nav-text">1.Equality tests should not be made with floating point value</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-This-class-overrides-“equals-”-and-should-therefore-also-override-“hashCode-”"><span class="nav-number">4.0.8.2.</span> <span class="nav-text">2.This class overrides “equals()” and should therefore also override “hashCode()”.　</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Synchronize-on-a-new-“Object”-instead"><span class="nav-number">4.0.8.3.</span> <span class="nav-text">3.Synchronize on a new “Object” instead</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-Close-this”FileInputStream”-in-a-“finally”-clause"><span class="nav-number">4.0.8.4.</span> <span class="nav-text">4.Close this”FileInputStream” in a “finally” clause.</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-A”NullPointerException”-could-be-thrown-“tom”-is-nullablehere"><span class="nav-number">4.0.8.5.</span> <span class="nav-text">5.A”NullPointerException” could be thrown; “tom” is nullablehere</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-Makethis-IP-“127-0-0-1”-address-configurable"><span class="nav-number">4.0.8.6.</span> <span class="nav-text">6.Makethis IP “127.0.0.1” address configurable</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-Either-log-or-rethrow-this-exception"><span class="nav-number">4.0.8.7.</span> <span class="nav-text">7.Either log or rethrow this exception.</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

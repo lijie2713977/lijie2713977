@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="传统的数据仓库一般是搭建在关系型数据库上，数据建模大多基于ER模型；现代互联网公司一般是搭建在大数据环境(cdh、hadoop)上，数据建模大多基于维度模型建设的。这些建模有什么不同？数据仓库又为需要需要数据建模呢？下面就从近期的学习学到的内容予以讲述。 为什么需要数据建模随着大数据时代互联网的到来，数据增长速度以爆发式发展，如何将这些数据进行有序、有结果地分类组织和存储是我们面临的一个挑战。如果">
+<meta name="keywords" content="模型设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据建模方法论">
+<meta property="og:url" content="http://cenrise.com/2019/02/05/数据中台/数据建模方法论/index.html">
+<meta property="og:site_name" content="Cenrise">
+<meta property="og:description" content="传统的数据仓库一般是搭建在关系型数据库上，数据建模大多基于ER模型；现代互联网公司一般是搭建在大数据环境(cdh、hadoop)上，数据建模大多基于维度模型建设的。这些建模有什么不同？数据仓库又为需要需要数据建模呢？下面就从近期的学习学到的内容予以讲述。 为什么需要数据建模随着大数据时代互联网的到来，数据增长速度以爆发式发展，如何将这些数据进行有序、有结果地分类组织和存储是我们面临的一个挑战。如果">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-13T10:01:13.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据建模方法论">
+<meta name="twitter:description" content="传统的数据仓库一般是搭建在关系型数据库上，数据建模大多基于ER模型；现代互联网公司一般是搭建在大数据环境(cdh、hadoop)上，数据建模大多基于维度模型建设的。这些建模有什么不同？数据仓库又为需要需要数据建模呢？下面就从近期的学习学到的内容予以讲述。 为什么需要数据建模随着大数据时代互联网的到来，数据增长速度以爆发式发展，如何将这些数据进行有序、有结果地分类组织和存储是我们面临的一个挑战。如果">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cenrise.com/2019/02/05/数据中台/数据建模方法论/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据建模方法论 | Cenrise</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cenrise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Cenrise</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cenrise.com/2019/02/05/数据中台/数据建模方法论/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dongpo.jia">
+      <meta itemprop="description" content="个人博客">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cenrise">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据建模方法论
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-05 09:55:00" itemprop="dateCreated datePublished" datetime="2019-02-05T09:55:00+08:00">2019-02-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-13 18:01:13" itemprop="dateModified" datetime="2019-03-13T18:01:13+08:00">2019-03-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据中台/" itemprop="url" rel="index"><span itemprop="name">数据中台</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据中台/模型设计/" itemprop="url" rel="index"><span itemprop="name">模型设计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>传统的数据仓库一般是搭建在关系型数据库上，数据建模大多基于ER模型；现代互联网公司一般是搭建在大数据环境(cdh、hadoop)上，数据建模大多基于维度模型建设的。这些建模有什么不同？数据仓库又为需要需要数据建模呢？下面就从近期的学习学到的内容予以讲述。</p>
+<h2 id="为什么需要数据建模"><a href="#为什么需要数据建模" class="headerlink" title="为什么需要数据建模"></a>为什么需要数据建模</h2><p>随着大数据时代互联网的到来，数据增长速度以爆发式发展，如何将这些数据进行有序、有结果地分类组织和存储是我们面临的一个挑战。<br>如果把数据看作图书馆里的书，我们希望看到它们在快回上分门别类地放置；如果把数据看作城市的建筑，我们希望城市规划布局合理；如果把数据看作电脑文件和文件夹，我们希望按照自己的习惯有很好的文件夹组织方式，而不是糟糕混乱的桌面，经常为找一个文件而不知所措。<br>数据模型就是数据组织和存储方法，它强调从业务、数据存取和使用角度合理存储数据。</p>
+<h3 id="建模的好处"><a href="#建模的好处" class="headerlink" title="建模的好处"></a>建模的好处</h3><p>大数据就能获得以下好处。</p>
+<ul>
+<li>性能：良好的数据模型能帮助我们快速查询所需要的数据，减少数据的I/O吞吐。</li>
+<li>成本：良好的数据模型能极大减少不必要的数据冗余，也能实现计算结果复用，极大地降低大数据系统中的存储和计算成本 。</li>
+<li>效率：良好的数据模型能极大地改善用户使用数据的体验，提高使用数据的效率。</li>
+<li>质量：良好的数据模型能改善数据统计口径的不一致性，减少数据计算错误的可能性。<br>因此，毋庸置疑，大数据系统需要数据模型方法来帮助更好地组织和存储数据，以便在性能、成本、效率和质量之间取得最佳平衡。</li>
+</ul>
+<h2 id="数据仓库建模方法论"><a href="#数据仓库建模方法论" class="headerlink" title="数据仓库建模方法论"></a>数据仓库建模方法论</h2><h3 id="ER模型"><a href="#ER模型" class="headerlink" title="ER模型"></a>ER模型</h3><p>是从企业的高级设计一个3NF模型，用实体关系（Entity Relationship，ER）模型描述企业业务，在范式上符合3NF。<br>数据仓库中的3NF与OLTP系统中的3NF的区别在于，它是站在企业角度面向主题的抽象，而不是针对某个具体业务流程的实体对象关系的抽象。其具有以下几个特点：<br>1.需要全面了解企业业务和数据。<br>2.实施周期非常长。<br>3.对建模人员的能力要求非常高。<br>采用ER模型建设数据仓库模型的出发点是整合数据，将各个系统中的数据以整个企业角度按主题进行相似性组合和合并，并进行一致性处理，为数据分析决策服务，但是并不能直接用于分析决策。<br>其建模步骤分为三个阶段：</p>
+<ul>
+<li>高层模型：一个高度抽象的模型，描述主要的主题以及主题间的关系，用于描述企业的业务总和概况。</li>
+<li>中层模型：在高层模型的基础上，细化主题的数据项。</li>
+<li>物理模型（也叫底层模型）：在中层模型的基础上，考虑物理存储，同时基于性能和平台特点进行物理属性的设计，也可能做一些表的合并、分区的设计等。</li>
+</ul>
+<h3 id="维度模型"><a href="#维度模型" class="headerlink" title="维度模型"></a>维度模型</h3><p>维度模型是当前最流行的建模方法类。维度建模从分析决策的需要出发构建模型，为分析需要服务，因此它重点关注用户如何更快速地完成需求分析，同时具有较好的大规模复杂查询的响应性能。其典型的代表是星形模型，以及在一些特殊场景下使用的雪花模型。其设计分为以下几个步骤。<br>1.选择需要进行分析决策的业务过程。业务过程可以是单个业务事件，比如交易的支付、退款等；也可以是某个事件的状态，比如当前的账户余额等；还可以是一系列相关业务事件组成的业务流程，具体需要看我们分析的是某些事件发生的情况，还是当前状态或是事件流转效率。<br>2.选择粒度。在事件分析中，我们要预判所有分析需要细分的程度，从而决定选择的粒度。粒度是维度的一个组合。<br>3.识别维表。选择好粒度之后，就需要基于此粒度设计维表，包括维度属性，用于分析时进行分组和筛选。<br>4.选择事实。确定分析需要衡量的指标。</p>
+<h3 id="Data-Vault模型"><a href="#Data-Vault模型" class="headerlink" title="Data Vault模型"></a>Data Vault模型</h3><p>DV模型是ER模型的衍生，其设计的出发点也是为了实现数据的整合，但不能直接用于数据分析决策。它强调建立一个可审计的基础数据层，也就是强调数据的历史性、可追溯性和原子性，而不要求对数据进行过度的一致性处理和整合；同时它基于主题概念将企业数据进行结构化组织，并引入了更进一步的范式处理来优化模型，以应对源系统变更的扩展性。Data Vault模型由以下几部分组成。<br>1.Hub：是企业的核心业务实体，由实体key、数据仓库序列代理键、装载时间、数据来源组成。<br>2.Link：代表Hub之间的关系。这里与ER模型最大的区别是将关系作为一个独立的单元抽象，可以提升模型的扩展性。它可以直接描述1:1、1:n和n:N的关系，而不需要做任何变更。它由Hub的代理键、装载时间、数据来源组成。<br>3.Satellite:是Hub的详细描述内容，一个Hub可以有多个Satellite。它由Hub的代理键、装载时间、来源类型、详细的Hub描述信息组成。<br>Data Vault模型比ER模型更容易设计和产出。它的ETL加工可实现配置化。通过Dan Linstedt的比喻更能理解Data Vault的核心思想：Hub可以想象成人的骨架，那么Link就是连接骨架的韧带，而Satellite就是骨架上面的血肉。</p>
+<h3 id="Anchor模型"><a href="#Anchor模型" class="headerlink" title="Anchor模型"></a>Anchor模型</h3><p>Anchor模型是Data Vault模型的进一步规范化，核心思想是所有的扩展只是添加而不会修改，因此将模型规范到6NF，基本变成了k-v结构化模型。<br>我们看一下Anchor模型的组成。<br>1.Anchors：类型于Data Vault的Hub，代表业务实体，且只有主键。<br>2.Attributes：功能类型于Data Vault的Satellite，但是它更加规范化，将其全部k-v结构化，一个表只有一个Anchors的属性描述。<br>3.Ties：就是Anchors之间的关系，单独用表来描述，类似于Data Vault的Link，可以提升整体模型关系的扩展能力。<br>4.Knots：代表那些可能会在多个Anchors中公用的属性的提炼，比如性别、状态等这种枚举类型且被公用的属性。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>阿里巴巴《大数据之路》</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="dongpo.jia 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="dongpo.jia 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模型设计/" rel="tag"># 模型设计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/01/数据中台/数据建模-事实表/" rel="next" title="数据建模-事实表">
+                <i class="fa fa-chevron-left"></i> 数据建模-事实表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/05/数据中台/数据建模-元数据/" rel="prev" title="数据建模-元数据">
+                数据建模-元数据 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dongpo.jia" />
+            
+              <p class="site-author-name" itemprop="name">dongpo.jia</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/jiadongpo" target="_blank" title="知乎"><i class="fa fa-fw fa-genderless"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要数据建模"><span class="nav-number">1.</span> <span class="nav-text">为什么需要数据建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模的好处"><span class="nav-number">1.1.</span> <span class="nav-text">建模的好处</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据仓库建模方法论"><span class="nav-number">2.</span> <span class="nav-text">数据仓库建模方法论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ER模型"><span class="nav-number">2.1.</span> <span class="nav-text">ER模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#维度模型"><span class="nav-number">2.2.</span> <span class="nav-text">维度模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Vault模型"><span class="nav-number">2.3.</span> <span class="nav-text">Data Vault模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchor模型"><span class="nav-number">2.4.</span> <span class="nav-text">Anchor模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dongpo.jia</span>
+
+  
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
